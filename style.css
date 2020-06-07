@@ -1,0 +1,30 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.row {
+    padding: 15px;
+    width: fit-content;
+}
+
+.startButtonDisplay {
+    display: inline;
+}
+
+.stopButtonDisplay {
+    display: none;
+}
+
+.text-centered {
+    text-align: center
+}
