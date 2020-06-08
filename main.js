@@ -1,3 +1,10 @@
+const os = require('os');
+const maxThreads = os.cpus().length;
+
+const Nimiq = require('@nimiq/core');
+const SushiPoolCpuMiner = require('./miner/SushiPoolCpuMiner.js');
+const Utils = require('./miner/Utils')
+
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 
@@ -15,6 +22,8 @@ function createWindow() {
       nodeIntegration: true
     }
   })
+
+  console.log('Detecting UV_THREADPOOL_SIZE: ' + process.env.UV_THREADPOOL_SIZE)
 
   if (!process.env.UV_THREADPOOL_SIZE) {
     process.env.UV_THREADPOOL_SIZE = 128
@@ -55,8 +64,10 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  console.log('Creating Main Window')
   createWindow()
 
+  console.log('Nimiq initialization')
   Nimiq.GenesisConfig.main()
 
   app.on('activate', function () {
@@ -79,33 +90,12 @@ app.on('window-all-closed', function () {
 
 // Miner
 
-// https://stackoverflow.com/questions/17554688/has-anyone-tried-using-the-uv-threadpool-size-environment-variable
-const os = require('os');
-const maxThreads = os.cpus().length;
-
-const Nimiq = require('@nimiq/core');
-const SushiPoolCpuMiner = require('./miner/SushiPoolCpuMiner.js');
-const Utils = require('./miner/Utils')
-
 const START = Date.now();
 const TAG = 'SushiPool';
 const $ = {};
 
 Nimiq.Log.instance.level = 'info';
 
-function humanHashes(bytes) {
-  let thresh = 1000;
-  if (Math.abs(bytes) < thresh) {
-    return bytes + ' H/s';
-  }
-  let units = ['kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s', 'ZH/s', 'YH/s'];
-  let u = -1;
-  do {
-    bytes /= thresh;
-    ++u;
-  } while (Math.abs(bytes) >= thresh && u < units.length - 1);
-  return bytes.toFixed(1) + ' ' + units[u];
-}
 const startMining = async (userAddress, poolHost, poolPort) => {
 
   const deviceName = os.hostname();
@@ -139,9 +129,6 @@ const startMining = async (userAddress, poolHost, poolPort) => {
     timeout = false;
   });
 
-  // Output regular statistics
-  const hashrates = [];
-  const outputInterval = 5;
   $.miner.on('hashrate-changed', hashrates => {
     const totalHashRate = hashrates.reduce((a, b) => a + b, 0)
     Nimiq.Log.i(TAG, `Hashrate: ${Utils.humanHashes(totalHashRate)}`)
@@ -163,3 +150,9 @@ ipcMain.on('stopMining', () => {
     delete $.miner
   }
 })
+
+process.on('uncaughtException', (err, origin) => {
+  console.log('Uncaught Exception:')
+  console.log(err)
+  console.log(`On: ${origin}`)
+});
