@@ -21,7 +21,7 @@
     "lodash.merge": "^4.6.2",
     "minimist": "^1.2.5",
     "mysql2": "^2.1.0",
-    "node-lmdb": "^0.8.0",
+    "node-lmdb": "^0.9.0",
     "node-powershell": "^4.0.0",
     "ping": "^0.2.3",
     "readline-sync": "^1.4.10",
@@ -33,11 +33,11 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.51",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.51",
     "@electron-forge/maker-zip": "^6.0.0-beta.51",
-    "electron": "^9.0.2",
+    "electron": "^9.0.3",
     "electron-rebuild": "^1.11.0"
   },
   "resolutions": {
-    "node-lmdb": "0.8.0"
+    "node-lmdb": "0.9.0"
   },
   "config": {
     "forge": {
