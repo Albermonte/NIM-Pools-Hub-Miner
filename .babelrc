@@ -1,0 +1,27 @@
+{
+  "comments": false,
+  "env": {
+    "main": {
+      "presets": [
+        ["@babel/preset-env", {
+          "targets": { "node": true }
+        }]
+      ]
+    },
+    "renderer": {
+      "presets": [
+        ["@babel/preset-env", {
+          "targets": { "node": true }
+        }]
+      ]
+    },
+    "web": {
+      "presets": [
+        ["@babel/preset-env", {
+          "modules": false
+        }]
+      ]
+    }
+  },
+  "plugins": ["@babel/plugin-transform-runtime"]
+}

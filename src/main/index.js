@@ -2,23 +2,34 @@ const os = require('os');
 const maxThreads = os.cpus().length;
 
 const Nimiq = require('@nimiq/core');
-const SushiPoolCpuMiner = require('./miner/SushiPoolCpuMiner.js');
-const Utils = require('./miner/Utils')
+const Utils = require('./miner/Utils');
+import SushiPoolCpuMiner from './miner/SushiPoolCpuMiner.js';
 
-// Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 
-const path = require('path')
 
-let mainWindow = null
+/**
+ * Set `__static` path to static files in production
+ * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
+ */
+if (process.env.NODE_ENV !== 'development') {
+  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+}
+
+let mainWindow
+const winURL = process.env.NODE_ENV === 'development'
+  ? `http://localhost:9080`
+  : `file://${__dirname}/index.html`
 
 function createWindow() {
-  // Create the browser window.
+  /**
+   * Initial window options
+   */
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    height: 563,
+    useContentSize: true,
+    width: 1000,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true
     }
   })
@@ -39,7 +50,7 @@ function createWindow() {
         .then(output => {
           dialog.showMessageBox({
             type: 'info',
-            message: 'First time setup completed. SushiPool Desktop Miner will now restart.'
+            message: 'First time setup completed. NIM Pools Hub Miner will now restart.'
           })
           app.relaunch()
           app.quit()
@@ -53,45 +64,54 @@ function createWindow() {
     console.log(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`)
   }
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  console.log('Creating Main Window')
-  createWindow()
-
   console.log('Nimiq initialization')
   Nimiq.GenesisConfig.main()
 
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  mainWindow.loadURL(winURL)
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
   })
+}
+
+app.on('ready', createWindow)
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') app.quit()
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow()
+  }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+/**
+ * Auto Updater
+ *
+ * Uncomment the following code below and install `electron-updater` to
+ * support auto updating. Code Signing with a valid certificate is required.
+ * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
+ */
+
+/*
+import { autoUpdater } from 'electron-updater'
+
+autoUpdater.on('update-downloaded', () => {
+  autoUpdater.quitAndInstall()
+})
+
+app.on('ready', () => {
+  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
+})
+ */
 
 
 // Miner
 
-const START = Date.now();
-const TAG = 'SushiPool';
+const TAG = 'Miner';
 const $ = {};
 
 Nimiq.Log.instance.level = 'info';

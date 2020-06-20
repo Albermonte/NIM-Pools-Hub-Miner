@@ -9,7 +9,7 @@ const GENESIS_HASH_MAINNET = 'Jkqvik+YKKdsVQY12geOtGYwahifzANxC+6fZJyGnRI='
 const HASHRATE_REPORT_INTERVAL = 5 // seconds
 const HASHRATE_MOVING_AVERAGE = 5 // seconds
 
-class SushiPoolCpuMiner extends Nimiq.Observable {
+export default class SushiPoolCpuMiner extends Nimiq.Observable {
     constructor (address, deviceData, threads) {
         super()
 
@@ -191,4 +191,3 @@ class SushiPoolCpuMiner extends Nimiq.Observable {
     }
 }
 
-module.exports = SushiPoolCpuMiner
