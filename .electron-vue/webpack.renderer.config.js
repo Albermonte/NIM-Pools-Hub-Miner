@@ -37,7 +37,7 @@ let rendererConfig = {
       },
       {
         test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
+        use: ['vue-style-loader', 'css-loader', { loader: 'sass-loader', options: { sassOptions: { indentedSyntax: true } } }]
       },
       {
         test: /\.less$/,

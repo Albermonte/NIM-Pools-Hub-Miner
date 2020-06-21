@@ -1,5 +1,5 @@
 const os = require('os');
-const maxThreads = os.cpus().length;
+let maxThreads = Math.round(os.cpus().length / 1.25);
 
 const Nimiq = require('@nimiq/core');
 const Utils = require('./miner/Utils');
@@ -164,9 +164,12 @@ const startMining = async (userAddress, poolHost, poolPort) => {
   })
 }
 
+ipcMain.on('threads', (event, arg) => {
+  maxThreads = arg
+})
+
 ipcMain.on('startMining', (event, arg) => {
   startMining(arg.address, arg.host, arg.port)
-  //event.reply('asynchronous-reply', 'pong')
 })
 
 ipcMain.on('stopMining', () => {

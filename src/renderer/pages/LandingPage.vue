@@ -11,7 +11,12 @@
         />
       </div>
       <div v-else class="col">
-        <input placeholder="Nimiq Address" id="address" class="nq-input-s text-center" style="width: 100%" />
+        <input
+          placeholder="Nimiq Address"
+          id="address"
+          class="nq-input-s text-center"
+          style="width: 100%"
+        />
       </div>
     </div>
     <div class="row space-between py-2">
@@ -26,6 +31,7 @@
       <input class="nq-input-s text-center" placeholder="Pool Port" id="port" value="8444" />
     </div>
     <div class="row py-2">
+      <RangeSlider :style="mining ? 'pointer-events: none; opacity: 0.65' : null" />
       <button v-if="!mining" @click="startMining" class="nq-button light-blue">Start Mining</button>
       <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
     </div>
@@ -37,13 +43,15 @@ import { ipcRenderer } from "electron";
 import HashrateCard from "@/components/HashrateCard.vue";
 import BalanceCard from "@/components/BalanceCard.vue";
 import LineChart from "@/components/LineChart.js";
+import RangeSlider from "@/components/RangeSlider.vue";
 
 export default {
   name: "landing-page",
   components: {
     HashrateCard,
     BalanceCard,
-    LineChart
+    LineChart,
+    RangeSlider
   },
   data() {
     return {
@@ -70,14 +78,14 @@ export default {
   },
   mounted() {
     ipcRenderer.on("hashrate-update", (event, message) => {
-      this.loading = false;
-
       this.hashrate.push(Number(message.split(" ")[0]));
       if (this.hashrate.length > 15) {
         this.hashrate.shift();
       }
 
-      this.time.push(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
+      this.time.push(
+        `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+      );
       if (this.time.length > 15) {
         this.time.shift();
       }
