@@ -11,7 +11,7 @@
         />
       </div>
       <div v-else class="col">
-        <input placeholder="Nimiq Address" id="address" class="nq-input-s" />
+        <input placeholder="Nimiq Address" id="address" class="nq-input-s text-center" style="width: 100%" />
       </div>
     </div>
     <div class="row space-between py-2">
