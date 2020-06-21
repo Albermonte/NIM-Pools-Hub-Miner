@@ -157,6 +157,11 @@ const startMining = async (userAddress, poolHost, poolPort) => {
     } catch (e) { }
   });
 
+  $.miner.on('pool-balance', balances => {
+    try {
+      mainWindow.webContents.send('pool-balance', balances)
+    } catch (e) { }
+  })
 }
 
 ipcMain.on('startMining', (event, arg) => {

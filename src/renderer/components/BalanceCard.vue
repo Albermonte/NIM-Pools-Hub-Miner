@@ -3,41 +3,39 @@
     <div class="nq-card-header">
       <span class="nq-h2">Pool Balance</span>
     </div>
-    <div class="nq-card-body">
-        <Amount />
-      {{ balance }} NIM
+    <div v-if="!loading" class="nq-card-body">{{ balance }} NIM</div>
+    <div v-else class="nq-card-body">
+      <CircleSpinner />
     </div>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from "electron";
-import Amount from "@/components/Amount";
+import CircleSpinner from "@/components/CircleSpinner";
 
 export default {
-  name: "hashrate-card",
+  name: "balance-card",
   components: {
-    Amount
+    CircleSpinner
   },
   data() {
     return {
       loading: false,
-      balance: 0
+      balance: 0,
+      confirmedBalance: 0
     };
   },
   mounted() {
-    ipcRenderer.on("hashrate-update", (event, message) => {
+    ipcRenderer.on("pool-balance", (event, message) => {
       this.loading = false;
-      this.hashrate = message;
+      this.balance = message.balance;
+      this.confirmedBalance = message.confirmedBalance;
     });
   },
   methods: {
     startMining() {
       this.loading = true;
-    },
-    stopMining() {
-      this.loading = false;
-      this.hashrate = "0 kH/s";
     }
   }
 };
