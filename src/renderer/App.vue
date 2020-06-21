@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import LandingPage from "@/components/LandingPage";
+import LandingPage from "@/pages/LandingPage";
 
 export default {
   name: "nim-pools-hub-miner",
@@ -23,5 +23,7 @@ body,
   margin: 0;
   height: 100%;
   width: 100%;
+  display: flex;
+  align-items: center;
 }
 </style>

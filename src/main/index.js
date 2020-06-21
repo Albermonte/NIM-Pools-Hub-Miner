@@ -28,7 +28,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1000,
+    width: process.env.NODE_ENV === 'development' ? 1000 : 570,
     webPreferences: {
       nodeIntegration: true
     }

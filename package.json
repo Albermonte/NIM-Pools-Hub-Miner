@@ -54,9 +54,13 @@
   "dependencies": {
     "@babel/runtime": "^7.10.3",
     "@nimiq/core": "^1.5.5",
+    "@nimiq/style": "^0.8.1",
+    "@nimiq/utils": "^0.5.1",
+    "big-integer": "^1.6.48",
     "node-powershell": "^4.0.0",
     "vue": "^2.6.11",
     "vue-electron": "^1.0.6",
+    "vue-property-decorator": "^9.0.0",
     "ws": "^7.3.0"
   },
   "devDependencies": {
