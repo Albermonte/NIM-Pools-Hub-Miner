@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="info-button">
+      <button class="nq-button-s green" @click="openHub">More info at NIM Pools Hub</button>
+    </div>
     <div class="row py-2">
       <div v-if="development" class="col">
         <input
@@ -7,7 +10,7 @@
           id="address"
           value="NQ65 GS91 H8CS QFAN 1EVS UK3G X7PL L9N1 X4KC"
           class="nq-input-s text-center"
-          style="width: 100%"
+          style="width: 100%; text-transform:uppercase;"
         />
       </div>
       <div v-else class="col">
@@ -15,7 +18,7 @@
           placeholder="Nimiq Address"
           id="address"
           class="nq-input-s text-center"
-          style="width: 100%"
+          style="width: 100%; text-transform:uppercase;"
         />
       </div>
     </div>
@@ -35,15 +38,18 @@
       <button v-if="!mining" @click="startMining" class="nq-button light-blue">Start Mining</button>
       <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
     </div>
+    <Alert :message="alertMessage" v-if="showAlert" @hideAlert="hideAlertHandler" />
   </div>
 </template>
 
 <script>
-import { ipcRenderer } from "electron";
+import { ipcRenderer, shell } from "electron";
 import HashrateCard from "@/components/HashrateCard.vue";
 import BalanceCard from "@/components/BalanceCard.vue";
 import LineChart from "@/components/LineChart.js";
 import RangeSlider from "@/components/RangeSlider.vue";
+import Alert from "@/components/Alert.vue";
+import * as NimiqUtils from "@nimiq/utils";
 
 export default {
   name: "landing-page",
@@ -51,7 +57,8 @@ export default {
     HashrateCard,
     BalanceCard,
     LineChart,
-    RangeSlider
+    RangeSlider,
+    Alert
   },
   data() {
     return {
@@ -73,7 +80,9 @@ export default {
         ]
       },
       time: [],
-      hashrate: []
+      hashrate: [],
+      alertMessage: null,
+      showAlert: false
     };
   },
   mounted() {
@@ -126,9 +135,15 @@ export default {
         port
       });
       if (address === "" || host === "" || port === "") {
-        alert("Fill all the inputs");
+        this.alert("Fill all the inputs: Address, Pool Host and Pool Port");
         return;
       } else {
+        try {
+          NimiqUtils.ValidationUtils.isUserFriendlyAddress(address);
+        } catch (e) {
+          this.alert(e);
+          return;
+        }
         this.mining = true;
         //console.log(this.$children);
         const hashrateComponent = this.$children.find(
@@ -155,6 +170,17 @@ export default {
         x => x.$vnode.tag === "vue-component-4-hashrate-card"
       );
       hashrateComponent.stopMining();
+    },
+    alert(e) {
+      this.alertMessage = e;
+      this.showAlert = true;
+    },
+    hideAlertHandler() {
+      this.showAlert = false;
+      this.alertMessage = null;
+    },
+    openHub() {
+      shell.openExternal('https://hub.shortnim.me/');
     }
   }
 };
@@ -200,5 +226,13 @@ export default {
 
 .text-center {
   text-align: center;
+}
+
+.info-button {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  width: 90%;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
