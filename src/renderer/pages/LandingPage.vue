@@ -1,8 +1,5 @@
 <template>
   <div class="container">
-    <div class="info-button">
-      <button class="nq-button-s green" @click="openHub">More info at NIM Pools Hub</button>
-    </div>
     <div class="row py-2">
       <div v-if="development" class="col">
         <input
@@ -49,6 +46,7 @@ import BalanceCard from "@/components/BalanceCard.vue";
 import LineChart from "@/components/LineChart.js";
 import RangeSlider from "@/components/RangeSlider.vue";
 import Alert from "@/components/Alert.vue";
+
 import * as NimiqUtils from "@nimiq/utils";
 
 export default {
@@ -58,7 +56,7 @@ export default {
     BalanceCard,
     LineChart,
     RangeSlider,
-    Alert
+    Alert,
   },
   data() {
     return {
@@ -179,9 +177,6 @@ export default {
       this.showAlert = false;
       this.alertMessage = null;
     },
-    openHub() {
-      shell.openExternal('https://hub.shortnim.me/');
-    }
   }
 };
 </script>
@@ -226,13 +221,5 @@ export default {
 
 .text-center {
   text-align: center;
-}
-
-.info-button {
-  padding-top: 16px;
-  padding-bottom: 16px;
-  width: 90%;
-  display: flex;
-  justify-content: flex-end;
 }
 </style>

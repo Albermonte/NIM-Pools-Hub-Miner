@@ -26,13 +26,18 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
+    height: 560,
     width: process.env.NODE_ENV === 'development' ? 1000 : 570,
+    center: true,
+    resizable: false,
+    fullscreenable: false,
+    frame: false,
+    transparent: true,
     webPreferences: {
       nodeIntegration: true
     }
   })
+  if (process.env.NODE_ENV !== 'development') mainWindow.removeMenu()
 
   console.log('Detecting UV_THREADPOOL_SIZE: ' + process.env.UV_THREADPOOL_SIZE)
 
