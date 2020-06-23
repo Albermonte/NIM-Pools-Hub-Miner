@@ -1,10 +1,11 @@
-# nim-pools-hub-miner
+# NIM Pools Hub Miner
 
-> Nimiq GUI Miner
+> GUI by Albermonte, Miner by SushiPool
 
 ## Download lastest release at:
 
 [Release Page](https://github.com/Albermonte/nim-pools-hub-miner/releases/latest)
+
 
 
 #### Miner in action
