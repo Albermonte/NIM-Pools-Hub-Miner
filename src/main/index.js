@@ -93,6 +93,11 @@ app.on('activate', () => {
   }
 })
 
+ipcMain.on('app-version', (event, arg) => {
+  console.log('App Version: ' + app.getVersion());
+  event.reply('app-version-reply', app.getVersion())
+})
+
 /**
  * Auto Updater
  *
@@ -101,17 +106,19 @@ app.on('activate', () => {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
 
-/*
-import { autoUpdater } from 'electron-updater'
+
+const { autoUpdater } = require("electron-updater")
 
 autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
+  mainWindow.webContents.send('update-downloaded');
+  setTimeout(() => autoUpdater.quitAndInstall(), 5000)
 })
 
 app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
+  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.logger = require("electron-log")
+  autoUpdater.logger.transports.file.level = "info"
 })
- */
 
 
 // Miner

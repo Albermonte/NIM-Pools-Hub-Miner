@@ -8,6 +8,6 @@ cd ..
 
 CALL npm i
 
-CALL npm run build:dir
+CALL npm run build
 
 CALL Powershell.exe Compress-Archive -Path .\build\win-unpacked\* -DestinationPath .\build\nim-pools-hub-miner-win32-x64.zip

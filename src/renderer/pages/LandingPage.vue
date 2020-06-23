@@ -36,11 +36,12 @@
       <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
     </div>
     <Alert :message="alertMessage" v-if="showAlert" @hideAlert="hideAlertHandler" />
+    <span class="app-version">v: {{ appVersion }}</span>
   </div>
 </template>
 
 <script>
-import { ipcRenderer, shell } from "electron";
+import { ipcRenderer } from "electron";
 import HashrateCard from "@/components/HashrateCard.vue";
 import BalanceCard from "@/components/BalanceCard.vue";
 import LineChart from "@/components/LineChart.js";
@@ -56,7 +57,7 @@ export default {
     BalanceCard,
     LineChart,
     RangeSlider,
-    Alert,
+    Alert
   },
   data() {
     return {
@@ -80,7 +81,8 @@ export default {
       time: [],
       hashrate: [],
       alertMessage: null,
-      showAlert: false
+      showAlert: false,
+      appVersion: "0.0.0"
     };
   },
   mounted() {
@@ -114,6 +116,14 @@ export default {
         ]
       };
     });
+    ipcRenderer.on("update-downloaded", () => {
+      this.alert("New update downloaded, restarting in 5 seconds...");
+    });
+    ipcRenderer.send("app-version");
+    ipcRenderer.on("app-version-reply", (event, message) => {
+      console.log("App Version: " + message);
+      this.appVersion = message;
+    });
   },
   computed: {
     development() {
@@ -143,14 +153,15 @@ export default {
           return;
         }
         this.mining = true;
+        //const expresion = /(vue-component-\d+-balance-card)/i
         //console.log(this.$children);
         const hashrateComponent = this.$children.find(
-          x => x.$vnode.tag === "vue-component-4-hashrate-card"
+          x => x.$vnode.tag === "vue-component-5-hashrate-card"
         );
         hashrateComponent.startMining();
 
         const balanceComponent = this.$children.find(
-          x => x.$vnode.tag === "vue-component-3-balance-card"
+          x => x.$vnode.tag === "vue-component-4-balance-card"
         );
         balanceComponent.startMining();
 
@@ -165,7 +176,7 @@ export default {
       this.mining = false;
       ipcRenderer.send("stopMining");
       const hashrateComponent = this.$children.find(
-        x => x.$vnode.tag === "vue-component-4-hashrate-card"
+        x => x.$vnode.tag === "vue-component-5-hashrate-card"
       );
       hashrateComponent.stopMining();
     },
@@ -176,7 +187,7 @@ export default {
     hideAlertHandler() {
       this.showAlert = false;
       this.alertMessage = null;
-    },
+    }
   }
 };
 </script>
@@ -221,5 +232,12 @@ export default {
 
 .text-center {
   text-align: center;
+}
+
+.app-version {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  font-size: 12px;
 }
 </style>

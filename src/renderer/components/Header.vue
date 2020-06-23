@@ -25,7 +25,7 @@
 </template>
 
 <script>
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const { BrowserWindow } = require("electron").remote;
 
 export default {

@@ -1,9 +1,9 @@
 {
   "name": "nim-pools-hub-miner",
-  "version": "0.0.1",
+  "version": "0.0.10",
   "author": "Albermonte <alberto.monterroso@hotmail.com>",
   "description": "Nimiq GUI Miner",
-  "license": null,
+  "license": "GPLv3",
   "main": "./dist/electron/main.js",
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
@@ -57,6 +57,8 @@
     "@nimiq/style": "^0.8.1",
     "@nimiq/utils": "^0.5.1",
     "chart.js": "^2.9.3",
+    "electron-log": "^4.2.2",
+    "electron-updater": "^4.3.1",
     "node-powershell": "^4.0.0",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.0",
