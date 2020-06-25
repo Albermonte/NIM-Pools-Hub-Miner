@@ -58,6 +58,7 @@
     "@nimiq/utils": "^0.5.1",
     "chart.js": "^2.9.3",
     "electron-log": "^4.2.2",
+    "electron-store": "^5.2.0",
     "electron-updater": "^4.3.1",
     "node-powershell": "^4.0.0",
     "vue": "^2.6.11",

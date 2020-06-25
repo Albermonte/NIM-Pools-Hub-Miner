@@ -13,7 +13,7 @@
       <div v-else class="col">
         <input
           placeholder="Nimiq Address"
-          id="address"
+          v-model="address"
           class="nq-input-s text-center"
           style="width: 100%; text-transform:uppercase;"
         />
@@ -27,8 +27,8 @@
       <line-chart :chart-data="datacollection" style="height: 120px; width:100%"></line-chart>
     </div>
     <div class="row space-between py-2">
-      <input class="nq-input-s text-center" placeholder="Pool Host" id="host" value="eu.nimpool.io" />
-      <input class="nq-input-s text-center" placeholder="Pool Port" id="port" value="8444" />
+      <input class="nq-input-s text-center" placeholder="Pool Host" v-model="host" />
+      <input class="nq-input-s text-center" placeholder="Pool Port" v-model="port" />
     </div>
     <div class="row py-2">
       <RangeSlider :style="mining ? 'pointer-events: none; opacity: 0.65' : null" />
@@ -50,6 +50,9 @@ import Alert from "@/components/Alert.vue";
 
 import * as NimiqUtils from "@nimiq/utils";
 
+const Store = require("electron-store");
+const store = new Store();
+
 export default {
   name: "landing-page",
   components: {
@@ -61,6 +64,9 @@ export default {
   },
   data() {
     return {
+      address: store.get("address"),
+      host: store.get("host") || "eu.nimpool.io",
+      port: store.get("port") || 8444,
       mining: false,
       datacollection: {
         labels: null,
@@ -133,10 +139,12 @@ export default {
   methods: {
     startMining() {
       ipcRenderer.send("stopMining");
+      console.log(this.address);
+      store.set("address", this.address);
 
-      const address = document.getElementById("address").value;
-      const host = document.getElementById("host").value;
-      const port = document.getElementById("port").value;
+      const address = this.address;
+      const host = this.host;
+      const port = this.port;
       console.log({
         address,
         host,
