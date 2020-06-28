@@ -18,8 +18,8 @@
     "postinstall": "postinstall.bat"
   },
   "build": {
-    "productName": "nim-pools-hub-miner",
-    "appId": "com.albermonte.nimiqguiminer",
+    "productName": "NIM Pools Hub Miner",
+    "appId": "com.nimpoolshub.nimiqguiminer",
     "directories": {
       "output": "build"
     },
