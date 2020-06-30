@@ -5,7 +5,7 @@
         <input
           placeholder="Nimiq Address"
           id="address"
-          value="NQ65 GS91 H8CS QFAN 1EVS UK3G X7PL L9N1 X4KC"
+          v-model="address"
           class="nq-input-s text-center"
           style="width: 100%; text-transform:uppercase;"
         />
@@ -64,7 +64,7 @@ export default {
   },
   data() {
     return {
-      address: store.get("address"),
+      address: process.env.NODE_ENV === "development" ? "NQ65 GS91 H8CS QFAN 1EVS UK3G X7PL L9N1 X4KC" : store.get("address"),
       host: store.get("host") || "eu.nimpool.io",
       port: store.get("port") || 8444,
       mining: false,

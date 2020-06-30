@@ -8,12 +8,18 @@
 <script>
 import Header from "@/components/Header.vue";
 import LandingPage from "@/pages/LandingPage";
+import { ipcRenderer } from "electron";
 
 export default {
   name: "nim-pools-hub-miner",
   components: {
     LandingPage,
     Header
+  },
+  created() {
+    ipcRenderer.on("log", message => {
+      console.log(message);
+    });
   }
 };
 </script>

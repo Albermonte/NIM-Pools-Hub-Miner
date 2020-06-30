@@ -1,6 +1,6 @@
 {
   "name": "nim-pools-hub-miner",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "author": "Albermonte <alberto.monterroso@hotmail.com>",
   "description": "Nimiq GUI Miner",
   "license": "GPLv3",

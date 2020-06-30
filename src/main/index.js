@@ -39,7 +39,7 @@ function createWindow() {
   })
   if (process.env.NODE_ENV !== 'development') mainWindow.removeMenu()
 
-  console.log('Detecting UV_THREADPOOL_SIZE: ' + process.env.UV_THREADPOOL_SIZE)
+  log('Detecting UV_THREADPOOL_SIZE: ' + process.env.UV_THREADPOOL_SIZE)
 
   if (!process.env.UV_THREADPOOL_SIZE) {
     process.env.UV_THREADPOOL_SIZE = 128
@@ -66,10 +66,10 @@ function createWindow() {
         })
     }
   } else {
-    console.log(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`)
+    log(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`)
   }
 
-  console.log('Nimiq initialization')
+  log('Nimiq initialization')
   Nimiq.GenesisConfig.main()
 
   mainWindow.loadURL(winURL)
@@ -94,7 +94,7 @@ app.on('activate', () => {
 })
 
 ipcMain.on('app-version', (event, arg) => {
-  console.log('App Version: ' + app.getVersion());
+  log('App Version: ' + app.getVersion());
   event.reply('app-version-reply', app.getVersion())
 })
 
@@ -190,6 +190,13 @@ ipcMain.on('stopMining', () => {
     delete $.miner
   }
 })
+
+const log = (message) => {
+  console.log(message)
+  try {
+    mainWindow.webContents.send('log', message)
+  } catch (e) { }
+}
 
 process.on('uncaughtException', (err, origin) => {
   console.log('Uncaught Exception:')
