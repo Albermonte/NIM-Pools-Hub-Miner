@@ -64,7 +64,10 @@ export default {
   },
   data() {
     return {
-      address: process.env.NODE_ENV === "development" ? "NQ65 GS91 H8CS QFAN 1EVS UK3G X7PL L9N1 X4KC" : store.get("address"),
+      address:
+        process.env.NODE_ENV === "development"
+          ? "NQ65 GS91 H8CS QFAN 1EVS UK3G X7PL L9N1 X4KC"
+          : store.get("address"),
       host: store.get("host") || "eu.nimpool.io",
       port: store.get("port") || 8444,
       mining: false,
@@ -200,10 +203,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
-@import "../../../node_modules/@nimiq/style/nimiq-style.min.css";
-
+<style>
 .container {
   width: 100%;
   height: 100%;

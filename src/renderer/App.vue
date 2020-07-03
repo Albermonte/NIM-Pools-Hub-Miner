@@ -1,19 +1,22 @@
 <template>
   <div id="app" class="app">
     <Header />
-    <landing-page></landing-page>
+    <PoolSelect />
+    <!-- <LandingPage /> -->
   </div>
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
+import Header from "@/components/Header";
 import LandingPage from "@/pages/LandingPage";
+import PoolSelect from "@/pages/PoolSelect";
 import { ipcRenderer } from "electron";
 
 export default {
   name: "nim-pools-hub-miner",
   components: {
     LandingPage,
+    PoolSelect,
     Header
   },
   created() {
@@ -25,7 +28,8 @@ export default {
 </script>
 
 <style>
-/* CSS */
+@import "../../node_modules/@nimiq/style/nimiq-style.min.css";
+
 html,
 body,
 .app {

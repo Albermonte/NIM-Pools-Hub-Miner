@@ -2,6 +2,8 @@
 
 @echo off
 
+echo Running Windows Postinstall
+
 xcopy /y ".\bindings\SushiPool_binding.gyp" ".\node_modules\@nimiq\core\binding.gyp"
 xcopy /y ".\bindings\Albermonte_binding.gyp" ".\node_modules\node-lmdb\binding.gyp"
 xcopy /y ".\bindings\Albermonte_binding.gyp" ".\node_modules\@nimiq\jungle-db\node_modules\node-lmdb\binding.gyp"
