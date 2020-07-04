@@ -4,29 +4,40 @@
       <h2 class="nq-h2">Pool List</h2>
       <p class="nq-notice">Select which pool you want to mine on</p>
     </div>
-    <div class="nq-card-body" style="min-width: 100%;">
-      <!-- https://vuescrolljs.yvescoding.org/ -->
-
-      <div class="pool-grid">
-        <PoolCard :displayName="pool.displayName" v-for="pool in poolList" :key="pool.index" />
-      </div>
-    </div>
-    <div class="nq-card" style="height: 145px; width: 91%;">
-      <div class="nq-card-header" style="padding-top: 12px; padding-bottom: 12px;">
-        <h2 class="nq-h2">Custom Pool</h2>
-      </div>
-      <div class="nq-card-body">
-        <div class="row">
-          <input class="nq-input-s text-center" placeholder="Pool Host" v-model="host" />
-          <input class="nq-input-s text-center" placeholder="Pool Port" v-model="port" />
+    <div class="nq-card-body" style="min-width: 100%; max-height: 390px;">
+      <vuescroll :ops="ops">
+        <div class="pool-grid">
+          <PoolCard
+            :displayName="pool.displayName"
+            :name="pool.name"
+            :globalHashrate="globalHashrate"
+            :poolUrl="pool.url"
+            v-for="pool in poolList"
+            :key="pool.index"
+            @setPool="setPool"
+          />
+          <div
+            class="nq-card"
+            style="height: 145px; width: 91%; box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.111158);"
+          >
+            <div class="nq-card-header" style="padding-top: 12px; padding-bottom: 12px;">
+              <h2 class="nq-h2">Custom Pool</h2>
+            </div>
+            <div class="nq-card-body">
+              <div class="row">
+                <input class="nq-input-s text-center" placeholder="Pool Host" v-model="host" />
+                <input class="nq-input-s text-center" placeholder="Pool Port" v-model="port" />
+              </div>
+            </div>
+            <div
+              class="nq-card-footer"
+              style="display: flex; justify-content: flex-end; padding-top: 1rem;"
+            >
+              <button class="nq-button-pill light-blue" @click="setCustomPool">Select</button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div
-        class="nq-card-footer"
-        style="display: flex; justify-content: flex-end; padding-top: 1rem;"
-      >
-        <button class="nq-button-pill light-blue">Select</button>
-      </div>
+      </vuescroll>
     </div>
   </div>
 </template>
@@ -34,18 +45,55 @@
 <script>
 import PoolCard from "@/components/PoolCard";
 import poolListArray from "@/store/poolList.js";
+import vuescroll from "vuescroll";
+import { ipcRenderer } from "electron";
+
+const Store = require("electron-store");
+const store = new Store();
 
 export default {
   name: "pool-select",
   components: {
-    PoolCard
+    PoolCard,
+    vuescroll
   },
   data() {
     return {
       poolList: poolListArray,
       host: null,
-      port: null
+      port: null,
+      globalHashrate: 1,
+      ops: {
+        vuescroll: {
+          detectResize: false
+        },
+        bar: {
+          background: "#21BCA5",
+          keepShow: true,
+          opacity: 0.8
+        }
+      }
     };
+  },
+  mounted() {
+    ipcRenderer.send("getGlobalHashrate");
+    ipcRenderer.on("getGlobalHashrateReply", (_, arg) => {
+      this.globalHashrate = arg;
+    });
+  },
+  methods: {
+    setCustomPool() {
+      store.set("host", this.host);
+      store.set("port", this.port);
+      store.set("poolDisplayName", this.host);
+      this.$emit("poolSelected");
+    },
+    setPool(pool) {
+      store.set("host", pool.host);
+      store.set("port", pool.port);
+      store.set("poolDisplayName", pool.displayName);
+      this.$emit("poolSelected");
+    }
   }
 };
 </script>
@@ -96,7 +144,6 @@ export default {
 .nq-card {
   width: 95%;
   height: 100%;
-  backdrop-filter: blur(1px);
   margin: 14px;
 }
 
@@ -115,8 +162,8 @@ export default {
 }
 
 .nq-card-header {
-  padding-top: 18px;
-  padding-bottom: 18px;
+  padding-top: 14px !important;
+  padding-bottom: 10px !important;
 }
 
 .nq-input-s {

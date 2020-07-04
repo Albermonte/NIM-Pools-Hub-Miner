@@ -1,7 +1,7 @@
 <template>
   <div class="rating">
-    <div class="value">Threads: {{ value }}</div>
-    <input type="range" v-model="value" min="1" list="tickmarks" :max="maxThreads" />
+    <h2 class="nq-h2">Threads: {{ value }}</h2>
+    <input type="range" v-model="value" min="1" :max="maxThreads" />
   </div>
 </template>
 
@@ -34,14 +34,15 @@ export default {
   margin-top: 14px
   margin-bottom: 8px
   font-weight: 600
-  color: #1F2348
+  color: #E9B213
     
 input[type="range"]
   appearance: none
   height: 6px
   background-color: #eee
   border-radius: 4px
-  width: 45vw
+  width: 40vw
   outline: none
   transition: background-color 1s, height 1s
+
 </style>

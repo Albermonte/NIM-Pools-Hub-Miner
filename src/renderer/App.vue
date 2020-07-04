@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="app">
     <Header />
-    <PoolSelect />
-    <!-- <LandingPage /> -->
+    <PoolSelect v-if="showPoolList" @poolSelected="showPoolList = false" />
+    <LandingPage v-else @selectPool="showPoolList = true" />
   </div>
 </template>
 
@@ -18,6 +18,11 @@ export default {
     LandingPage,
     PoolSelect,
     Header
+  },
+  data() {
+    return {
+      showPoolList: false
+    };
   },
   created() {
     ipcRenderer.on("log", message => {

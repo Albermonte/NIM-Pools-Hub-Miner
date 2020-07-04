@@ -23,17 +23,25 @@
       <BalanceCard />
       <HashrateCard />
     </div>
-    <div class="row py-3">
+    <div class="row py-2">
       <line-chart :chart-data="datacollection" style="height: 120px; width:100%"></line-chart>
     </div>
-    <div class="row space-between py-2">
-      <input class="nq-input-s text-center" placeholder="Pool Host" v-model="host" />
-      <input class="nq-input-s text-center" placeholder="Pool Port" v-model="port" />
-    </div>
-    <div class="row py-2">
-      <RangeSlider :style="mining ? 'pointer-events: none; opacity: 0.65' : null" />
-      <button v-if="!mining" @click="startMining" class="nq-button light-blue">Start Mining</button>
-      <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
+    <div class="row">
+      <div class="col space-between">
+        <div class="row" style="width: 100%; align-items: center; margin-top:5px">
+          <h1 class="nq-h1">Pool: {{ displayName }}</h1>
+        </div>
+        <button
+          class="nq-button orange"
+          @click="selectPool"
+          :class="mining ? 'disabled' : ''"
+        >Change Pool</button>
+      </div>
+      <div class="col space-between">
+        <RangeSlider :class="mining ? 'disabled' : ''" />
+        <button v-if="!mining" @click="startMining" class="nq-button light-blue">Start Mining</button>
+        <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
+      </div>
     </div>
     <Alert :message="alertMessage" v-if="showAlert" @hideAlert="hideAlertHandler" />
     <span class="app-version">v: {{ appVersion }}</span>
@@ -70,6 +78,7 @@ export default {
           : store.get("address"),
       host: store.get("host") || "eu.nimpool.io",
       port: store.get("port") || 8444,
+      displayName: store.get("poolDisplayName") || "Nimpool",
       mining: false,
       datacollection: {
         labels: null,
@@ -167,12 +176,12 @@ export default {
         //const expresion = /(vue-component-\d+-balance-card)/i
         //console.log(this.$children);
         const hashrateComponent = this.$children.find(
-          x => x.$vnode.tag === "vue-component-5-hashrate-card"
+          x => x.$vnode.tag === "vue-component-6-hashrate-card"
         );
         hashrateComponent.startMining();
 
         const balanceComponent = this.$children.find(
-          x => x.$vnode.tag === "vue-component-4-balance-card"
+          x => x.$vnode.tag === "vue-component-5-balance-card"
         );
         balanceComponent.startMining();
 
@@ -187,7 +196,7 @@ export default {
       this.mining = false;
       ipcRenderer.send("stopMining");
       const hashrateComponent = this.$children.find(
-        x => x.$vnode.tag === "vue-component-5-hashrate-card"
+        x => x.$vnode.tag === "vue-component-6-hashrate-card"
       );
       hashrateComponent.stopMining();
     },
@@ -198,6 +207,9 @@ export default {
     hideAlertHandler() {
       this.showAlert = false;
       this.alertMessage = null;
+    },
+    selectPool() {
+      this.$emit("selectPool");
     }
   }
 };
@@ -222,6 +234,9 @@ export default {
 .col {
   display: flex;
   width: 100%;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .space-between {
@@ -247,5 +262,22 @@ export default {
   bottom: 0;
   right: 5px;
   font-size: 12px;
+}
+
+.nq-button {
+  margin: 1.5rem !important;
+}
+
+.nq-h1 {
+  margin: 0 !important;
+}
+
+.nq-h2 {
+  margin: 0 !important;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.65;
 }
 </style>
