@@ -1,7 +1,10 @@
 const { exec } = require("child_process");
 const os = require("os");
+const fs = require("fs");
 const Windows = require.resolve("./postinstall.bat");
 const LinuxAndMac = require.resolve("./postinstall.sh");
+
+fs.chmodSync(LinuxAndMac, "755");
 
 const log = (error, stdout, stderr) => {
   if (error) {

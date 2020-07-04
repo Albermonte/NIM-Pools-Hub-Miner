@@ -6,17 +6,15 @@
 
 [Release Page](https://github.com/Albermonte/nim-pools-hub-miner/releases/latest)
 
-
-
 #### Miner in action
 
-![Mining](screenshots/mining.png)
+![Mining](screenshots/mining.png) ![Pool List](screenshots/poolList.png)
 
 ---
 
 #### Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
@@ -30,7 +28,8 @@ npm run build
 ```
 
 ---
-Time spent so far:  
+
+Time spent so far:
 
 [![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner)
 
