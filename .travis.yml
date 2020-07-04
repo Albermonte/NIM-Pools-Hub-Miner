@@ -2,14 +2,14 @@ matrix:
   include:
     - os: linux
       language: node_js
-      node_js: "11.15"
+      node_js: "12.18"
     - os: osx
       osx_image: xcode9.4
       language: node_js
-      node_js: "11.15"
+      node_js: "12.18"
     - os: windows
       language: node_js
-      node_js: "11.15"
+      node_js: "12.18"
 script:
   - |
     export PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
