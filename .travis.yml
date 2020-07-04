@@ -26,7 +26,8 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: $GITHUB_TOKEN
+    secure: gnFC36fAKFYJDxVK3IKa1hSxznTIcUM8xWi9ZuN7feZoBi/yp+90f4vwFe0KQRkycFofToMIcbGIPw+C8pvMTId1Zc17rC+jdJY4PkmfpI97agSumvi0MQMdg41Fed7nUXg+0xACzm75HdVkAXchojgD9p995tRGeE2sHZUeitmERvc2yArk4Aht3hhPdVOy65kpFn2xTfjT3dp1f6mNW4CEsqsgMGEISBhLaiHdaU+bqp3fjYDxIcrrwOLlcqYtc9wXzhGmarQ8Gm0rvZMKKZjAmzqKXG5z6nOQAkZb/bM/oXrFIKUFlS1CTzyqiilrGdGCSnGEunMmQgXAohVg7fEwexQXfcIwW9ODfh/vTc5Jru9135aj0ORnRXeAggRF5yIrpjom1MFa6r+My7lRsFcco6PBpKPyzg/MitrEvAerHB2iHM6JpPirGZJU4a9Q40fJPxDAxbGH/4chebGpzztYHXB3cGTy1q+XDnvOxv/MzR6xaXdOQrnI5P93Vg3uBA8OZv+IZ9MhV/SrToFoEF3J0AH+UvATBxiZwbBb0VqwzKHQUf2JGKYU5Cqg1LemmswHvSOhCPyoI1Mb2H9Riuogj7+uhu7wRwio2QgbbIuH5TKDDAdgozffHs4qzc3gua9Ggmh7/wUwf0HhRvJ1xBLujJxlmglccwIoPsOR1NY=
+
   file:
     #- 'build/nim-pools-hub-miner_$PACKAGE_VERSION_amd64.snap'
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.AppImage"
