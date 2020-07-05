@@ -1,43 +1,36 @@
+osx_image: xcode11.5
+sudo: required
+dist: trusty
+language: c
 matrix:
   include:
-    - os: linux
-      language: node_js
-      node_js: "12.18"
     - os: osx
-      osx_image: xcode11.5
-      language: node_js
-      node_js: "12.18"
-    - os: windows
-      language: node_js
-      node_js: "12.18"
+    - os: linux
+      env: CC=clang CXX=clang++ npm_config_clang=1
+      compiler: clang
+cache:
+  directories:
+    - node_modules
+    - "$HOME/.electron"
+    - "$HOME/.cache"
+addons:
+  apt:
+    packages:
+      - libgnome-keyring-dev
+      - icnsutils
+before_install:
+  - mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v1.2.1/git-lfs-$([
+    "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-1.2.1.tar.gz
+    | tar -xz -C /tmp/git-lfs --strip-components 1 && /tmp/git-lfs/git-lfs pull
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils; fi
+install:
+  - nvm install 12
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - source ~/.bashrc
+  - npm install -g xvfb-maybe
+  - yarn
 script:
-  - |
-    export PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
-    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      npm install;
-      npm run build && ls -la build;
-    elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      npm install;
-      npm run build && ls -la build;
-    elif [ "$TRAVIS_OS_NAME" == "windows" ]; then
-      npm install;
-      npm run build && ls -la build;
-    fi
-deploy:
-  provider: releases
-  api_key:
-    secure: keoDnrfnJhXYe3TMj9cK2OeMAAg6CPUMcKs+2ctOqIG+rO/M6lG1lhrbW7j4Xs/MDBfTR7HsEfFIIwVH5TVvYZlqY0bnK/R8O6At9ucAJAGX+CXZ2LGkmjOKaVp+tC4MfMVCetBUGMtdAyBTbXipuPMe8KzpEC93uHljX8R0OflsRrEXOP47XpIYDWomT6yAbh/ZabQ8fwPYk5IMwys5Xu27Fba+awOV5eQrF3xUEwS7yiKdjMM6DbMOOxcg2vwN8oUyYzmsrEzF6mJtwiDBBBm67dpNw+H9uOXDL/5irRfpym7i9RivDNoe+w5zD+CbOT7U7S7hPC0sNVmoiL/YrNUvJbA5+iZJwRvRwMhOKw0Ce1pHCOwqXoC1TmSXU1bgnQZTEoWJTIlX39G72tO/dxH0WQrDg3H5g9kL4mx7FMo9Mopmy2bx3VOxD6lAQYwoOvNLOMkfar2FubpJgBpkkd1sJzHnDvsXV6kX51v30JFqENeNTbRysfuNtaKOtOueHKyxpVd4ESC7wEXYP4Qlzg86d1USiZZDOsf4vfj7h1a4JkcOBdGVbc6xAHBTiKegariR3Hwei7TOH/8XrQKgCtjFsQ+djXqgcWIVzYhqUpYYdqCi2seVUJybv2Xs+GMEEQV56D72I2WjWe+wXj6Etlu35mZBP69Ee028Sy/UCag=
-  file:
-    #- 'build/nim-pools-hub-miner_$PACKAGE_VERSION_amd64.snap'
-    - "build/latest-linux.yml"
-    - "build/NIM-Pools-Hub-Miner-linux-x86_64-$PACKAGE_VERSION.AppImage"
-    - "build/latest-mac.yml"
-    - "build/NIM-Pools-Hub-Miner-mac-$PACKAGE_VERSION.zip"
-    - "build/NIM-Pools-Hub-Miner-mac-$PACKAGE_VERSION.dmg"
-    - "build/NIM-Pools-Hub-Miner-mac-$PACKAGE_VERSION.blockmap"
-    - "build/latest.yml"
-    - "build/NIM-Pools-Hub-Miner-win-$PACKAGE_VERSION.exe"
-    - "build/NIM-Pools-Hub-Miner-win-$PACKAGE_VERSION.exe.blockmap"
-  skip_cleanup: "true"
-  on:
-    tags: true
+  - yarn run build
+branches:
+  only:
+    - master
