@@ -3,6 +3,7 @@
   "version": "0.0.12",
   "author": "Albermonte <alberto.monterroso@hotmail.com>",
   "description": "Nimiq GUI Miner",
+  "homepage": "https://github.com/Albermonte/nim-pools-hub-miner",
   "license": "GPLv3",
   "main": "./dist/electron/main.js",
   "scripts": {
