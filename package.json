@@ -57,8 +57,11 @@
         "deb"
       ]
     },
-    "vPrefixedTagName": true,
-    "releaseType": "release"
+    "publish": {
+      "provider": "github",
+      "vPrefixedTagName": true,
+      "releaseType": "release"
+    }
   },
   "dependencies": {
     "@babel/runtime": "^7.10.4",
