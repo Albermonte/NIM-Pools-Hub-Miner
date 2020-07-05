@@ -20,7 +20,7 @@
   "build": {
     "productName": "NIM Pools Hub Miner",
     "appId": "com.nimpoolshub.nimiqguiminer",
-    "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
+    "artifactName": "NIM-Pools-Hub-Miner-${os}-${arch}-${version}.${ext}",
     "directories": {
       "output": "build"
     },

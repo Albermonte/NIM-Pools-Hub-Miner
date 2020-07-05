@@ -30,14 +30,14 @@ deploy:
   file:
     #- 'build/nim-pools-hub-miner_$PACKAGE_VERSION_amd64.snap'
     - "build/latest-linux.yml"
-    - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.AppImage"
+    - "build/NIM Pools Hub Miner-linux-x86_64-0.0.12.AppImage"
     - "build/latest-mac.yml"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION-mac.zip"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.dmg"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.dmg.blockmap"
     - "build/latest.yml"
-    - "build/NIM Pools Hub Miner Setup $PACKAGE_VERSION.exe"
-    - "build/NIM Pools Hub Miner Setup $PACKAGE_VERSION.exe.blockmap"
+    - "build/NIM-Pools-Hub-Miner-win-$PACKAGE_VERSION.exe"
+    - "build/NIM-Pools-Hub-Miner-win-$PACKAGE_VERSION.exe.blockmap"
   skip_cleanup: "true"
   on:
     tags: true
