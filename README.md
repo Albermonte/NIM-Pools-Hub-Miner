@@ -1,4 +1,4 @@
-# NIM Pools Hub Miner
+# NIM Pools Hub Miner [![Github All Releases](https://img.shields.io/github/downloads/Albermonte/nim-pools-hub-miner/total.svg)]() [![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner) [![Build Status](https://travis-ci.com/Albermonte/nim-pools-hub-miner.svg?branch=master)](https://travis-ci.com/Albermonte/nim-pools-hub-miner)
 
 > GUI by Albermonte, Miner by SushiPool
 
@@ -28,9 +28,5 @@ npm run build
 ```
 
 ---
-
-Time spent so far:
-
-[![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner)
 
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
