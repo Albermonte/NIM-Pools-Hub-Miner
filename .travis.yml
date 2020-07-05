@@ -29,10 +29,13 @@ deploy:
     secure: keoDnrfnJhXYe3TMj9cK2OeMAAg6CPUMcKs+2ctOqIG+rO/M6lG1lhrbW7j4Xs/MDBfTR7HsEfFIIwVH5TVvYZlqY0bnK/R8O6At9ucAJAGX+CXZ2LGkmjOKaVp+tC4MfMVCetBUGMtdAyBTbXipuPMe8KzpEC93uHljX8R0OflsRrEXOP47XpIYDWomT6yAbh/ZabQ8fwPYk5IMwys5Xu27Fba+awOV5eQrF3xUEwS7yiKdjMM6DbMOOxcg2vwN8oUyYzmsrEzF6mJtwiDBBBm67dpNw+H9uOXDL/5irRfpym7i9RivDNoe+w5zD+CbOT7U7S7hPC0sNVmoiL/YrNUvJbA5+iZJwRvRwMhOKw0Ce1pHCOwqXoC1TmSXU1bgnQZTEoWJTIlX39G72tO/dxH0WQrDg3H5g9kL4mx7FMo9Mopmy2bx3VOxD6lAQYwoOvNLOMkfar2FubpJgBpkkd1sJzHnDvsXV6kX51v30JFqENeNTbRysfuNtaKOtOueHKyxpVd4ESC7wEXYP4Qlzg86d1USiZZDOsf4vfj7h1a4JkcOBdGVbc6xAHBTiKegariR3Hwei7TOH/8XrQKgCtjFsQ+djXqgcWIVzYhqUpYYdqCi2seVUJybv2Xs+GMEEQV56D72I2WjWe+wXj6Etlu35mZBP69Ee028Sy/UCag=
   file:
     #- 'build/nim-pools-hub-miner_$PACKAGE_VERSION_amd64.snap'
+    - "latest-linux.yml"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.AppImage"
+    - "latest-mac.yml"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION-mac.zip"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.dmg"
     - "build/NIM Pools Hub Miner-$PACKAGE_VERSION.dmg.blockmap"
+    - "latest.yml"
     - "build/NIM Pools Hub Miner Setup $PACKAGE_VERSION.exe"
     - "build/NIM Pools Hub Miner Setup $PACKAGE_VERSION.exe.blockmap"
   skip_cleanup: "true"
