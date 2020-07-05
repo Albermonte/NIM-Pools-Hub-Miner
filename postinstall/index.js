@@ -18,9 +18,11 @@ const log = (error, stdout, stderr) => {
   console.log(`stdout: ${stdout}`);
 };
 
-console.log("OS Type: " + os.type());
+const osType = os.type();
 
-if (os.type() === "Linux") exec(LinuxAndMac, log);
-else if (os.type() === "Darwin") exec(LinuxAndMac, log);
-else if (os.type() === "Windows_NT") exec(Windows, log);
-else throw new Error("Unsupported OS found: " + os.type());
+console.log(`Optimizing build for ${osType}, this will take some time`);
+
+if (osType === "Linux") exec(LinuxAndMac, log);
+else if (osType === "Darwin") exec(LinuxAndMac, log);
+else if (osType === "Windows_NT") exec(Windows, log);
+else throw new Error("Unsupported OS found: " + osType);
