@@ -8,7 +8,8 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
-    "build": "node .electron-vue/build.js && electron-builder --publish onTag",
+    "build": "node .electron-vue/build.js && electron-builder",
+    "release": "node .electron-vue/build.js && electron-builder --publish always",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
