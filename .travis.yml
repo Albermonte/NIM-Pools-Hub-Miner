@@ -28,7 +28,7 @@ install:
   - npm install -g xvfb-maybe
   - npm i
 script:
-  - npm run release
+  - npm run build
 branches:
   only:
     - master
