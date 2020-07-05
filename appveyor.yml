@@ -3,8 +3,9 @@ version: 0.0.{build}
 skip_non_tags: true
 
 branches:
-  except:
-    - dev
+  only:
+    - master
+    - /v\d*\.\d*\.\d*/g
 
 image:
   - Visual Studio 2017
