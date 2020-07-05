@@ -29,6 +29,6 @@ install:
   - node --version
 
 build_script:
-  - yarn build
+  - npm run build
 
 test: off
