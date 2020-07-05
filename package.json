@@ -52,9 +52,9 @@
     }
   },
   "dependencies": {
-    "@babel/runtime": "^7.10.3",
+    "@babel/runtime": "^7.10.4",
     "@nimiq/core": "^1.5.5",
-    "@nimiq/style": "^0.8.1",
+    "@nimiq/style": "^0.8.2",
     "@nimiq/utils": "^0.5.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
@@ -67,38 +67,38 @@
     "vue-electron": "^1.0.6",
     "vue-property-decorator": "^9.0.0",
     "vuescroll": "^4.16.0",
-    "ws": "^7.3.0"
+    "ws": "^7.3.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.3",
-    "@babel/plugin-transform-runtime": "^7.10.3",
-    "@babel/preset-env": "^7.10.3",
-    "@vue/cli-plugin-typescript": "^4.4.4",
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@vue/cli-plugin-typescript": "^4.4.6",
     "babel-loader": "^8.1.0",
     "cfonts": "^2.8.5",
     "chalk": "^4.1.0",
-    "copy-webpack-plugin": "^6.0.2",
+    "copy-webpack-plugin": "^6.0.3",
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
     "del": "^5.1.0",
     "devtron": "^1.4.0",
-    "electron": "^9.0.4",
+    "electron": "^9.0.5",
     "electron-builder": "^22.7.0",
     "electron-debug": "^3.1.0",
-    "electron-devtools-installer": "^3.0.0",
+    "electron-devtools-installer": "^3.1.0",
     "electron-rebuild": "^1.11.0",
     "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "0.9.0",
     "multispinner": "^0.2.1",
-    "node-lmdb": "^0.9.1",
-    "node-loader": "^0.6.0",
+    "node-lmdb": "https://github.com/tomkha/node-lmdb#win_delay_load_hook",
+    "node-loader": "^1.0.0",
     "node-sass": "^4.14.1",
-    "sass-loader": "^8.0.2",
+    "sass-loader": "^9.0.1",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^3.0.6",
     "url-loader": "^4.1.0",
     "vue-html-loader": "^1.2.4",
-    "vue-loader": "^15.9.2",
+    "vue-loader": "^15.9.3",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.43.0",
@@ -108,6 +108,6 @@
     "webpack-merge": "^4.2.2"
   },
   "resolutions": {
-    "node-lmdb": "0.9.1"
+    "node-lmdb": "https://github.com/tomkha/node-lmdb#win_delay_load_hook"
   }
 }
