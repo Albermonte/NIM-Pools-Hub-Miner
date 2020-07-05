@@ -12,9 +12,6 @@ image:
 platform:
   - x64
 
-environment:
-  nodejs_version: 12.18.0
-
 cache:
   - node_modules
   - '%APPDATA%\npm-cache'
@@ -25,8 +22,8 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - cmd: powershell Install-Product node $env:nodejs_version x64
-  - sh: nvm install $nodejs_version
+  - cmd: powershell Install-Product node 12.18.0 x64
+  - sh: nvm install 12.18.0
   - git reset --hard HEAD
   - npm i
   - node --version
