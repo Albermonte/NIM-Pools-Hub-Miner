@@ -1,5 +1,5 @@
 # NIM Pools Hub Miner 
-[![Github All Releases](https://img.shields.io/github/downloads/Albermonte/nim-pools-hub-miner/total.svg)]() [![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner) [![Build status](https://ci.appveyor.com/api/projects/status/bxh346f3qoetemq1?svg=true)](https://ci.appveyor.com/project/Albermonte/nim-pools-hub-miner)
+[![Github All Releases](https://img.shields.io/github/downloads/Albermonte/nim-pools-hub-miner/total.svg)]() [![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner) [![Build status](https://ci.appveyor.com/api/projects/status/bxh346f3qoetemq1?svg=true)](https://ci.appveyor.com/project/Albermonte/nim-pools-hub-miner) [![Donate NIM](https://www.nimiq.com/accept-donations/img/donationBtnImg/orange-small.svg)](https://safe.nimiq.com/#_request/NQ65GS91H8CSQFAN1EVSUK3GX7PLL9N1X4KC_)
 
 > GUI by Albermonte, Miner by SushiPool
 
