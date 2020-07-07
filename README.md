@@ -5,7 +5,7 @@
 
 ## Download lastest release at:
 
-[Release Page](https://github.com/Albermonte/nim-pools-hub-miner/releases/latest)
+[Releases Page](https://github.com/Albermonte/nim-pools-hub-miner/releases/latest)
 
 #### Miner in action
 
