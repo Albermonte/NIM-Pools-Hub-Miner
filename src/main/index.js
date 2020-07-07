@@ -1,12 +1,14 @@
-const os = require("os");
-let maxThreads = Math.round(os.cpus().length / 1.25);
+import { cpus, hostname } from "os";
+let maxThreads = Math.round(cpus().length / 1.25);
 
-const Nimiq = require("@nimiq/core");
-const Utils = require("./miner/Utils");
+import * as Nimiq from "@nimiq/core";
+import { battery, cpuTemperature } from "systeminformation";
+
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
+
 import SushiPoolCpuMiner from "./miner/SushiPoolCpuMiner.js";
 import checkPoolOnline, { getGlobalHashrate } from "./api";
-
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+import { humanHashes } from "./miner/Utils";
 
 // Disable security warnings
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -107,6 +109,13 @@ ipcMain.on("app-version", (event, arg) => {
   event.reply("app-version-reply", app.getVersion());
 });
 
+// Disabled until Temperatures are reliable, getting 16ºC on my PC, thanks to wmic reporting bad temperatures
+/* ipcMain.on("cpu-temp", async (event, arg) => {
+  const temp = await cpuTemperature();
+  console.log("CPU Temp: ", temp);
+  event.reply("cpu-temp-reply", temp.main);
+}); */
+
 /**
  * Auto Updater
  *
@@ -137,7 +146,7 @@ const $ = {};
 Nimiq.Log.instance.level = "info";
 
 const startMining = async (userAddress, poolHost, poolPort) => {
-  const deviceName = os.hostname();
+  const deviceName = hostname();
 
   Nimiq.Log.i(TAG, `- network          = main`);
   Nimiq.Log.i(TAG, `- no. of threads   = ${maxThreads}`);
@@ -174,11 +183,11 @@ const startMining = async (userAddress, poolHost, poolPort) => {
 
   $.miner.on("hashrate-changed", (hashrates) => {
     const totalHashRate = hashrates.reduce((a, b) => a + b, 0);
-    Nimiq.Log.i(TAG, `Hashrate: ${Utils.humanHashes(totalHashRate)}`);
+    Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashRate)}`);
     try {
       mainWindow.webContents.send(
         "hashrate-update",
-        Utils.humanHashes(totalHashRate)
+        humanHashes(totalHashRate)
       );
     } catch (e) {}
   });
@@ -196,7 +205,10 @@ ipcMain.on("threads", (event, arg) => {
   maxThreads = arg;
 });
 
-ipcMain.on("startMining", (event, arg) => {
+ipcMain.on("startMining", async (event, arg) => {
+  const batteryData = await battery();
+  if (batteryData.hasbattery && !batteryData.ischarging)
+    mainWindow.webContents.send("laptopNotChargin");
   startMining(arg.address, arg.host, arg.port);
 });
 

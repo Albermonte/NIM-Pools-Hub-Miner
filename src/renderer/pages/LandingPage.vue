@@ -45,6 +45,7 @@
     </div>
     <Alert :message="alertMessage" v-if="showAlert" @hideAlert="hideAlertHandler" />
     <span class="app-version">v: {{ appVersion }}</span>
+    <span class="cpu-temp">CPU: {{ cpuTemp }} ºC</span>
   </div>
 </template>
 
@@ -100,7 +101,8 @@ export default {
       hashrate: [],
       alertMessage: null,
       showAlert: false,
-      appVersion: "0.0.0"
+      appVersion: "0.0.0",
+      cpuTemp: 0
     };
   },
   mounted() {
@@ -134,13 +136,33 @@ export default {
         ]
       };
     });
+
+    // If updated finished downloading Alert the user the app is going to restart
     ipcRenderer.on("update-downloaded", () => {
       this.alert("New update downloaded, restarting in 5 seconds...");
     });
+
+    // Ask backend which is the app version
     ipcRenderer.send("app-version");
     ipcRenderer.on("app-version-reply", (event, message) => {
       console.log("App Version: " + message);
       this.appVersion = message;
+    });
+
+    // Disabled until Temperatures are reliable, getting 16ºC on my PC, thanks to wmic reporting bad temperatures
+    // Check immediately what's the CPU Temp and add an interval
+    /* ipcRenderer.send("cpu-temp");
+    setInterval(() => ipcRenderer.send("cpu-temp"), 1 * 60 * 1e3); // Check CPU temperature every x minutes
+    ipcRenderer.on("cpu-temp-reply", (event, message) => {
+      this.cpuTemp =
+        message > 0 ? message : "Run this app as Admin to check CPU ";
+    }); */
+
+    // If backend detects this device as laptop and not chargin tell the user to plug it
+    ipcRenderer.on("laptopNotChargin", () => {
+      this.alert(
+        "You seem to be mining on a Laptop but it's not charging, maybe you want to plug it in ;D"
+      );
     });
   },
   computed: {
@@ -261,6 +283,13 @@ export default {
   position: absolute;
   bottom: 0;
   right: 5px;
+  font-size: 12px;
+}
+
+.cpu-temp {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
   font-size: 12px;
 }
 
