@@ -3,9 +3,11 @@
  [![Github All Releases](https://img.shields.io/github/downloads/Albermonte/nim-pools-hub-miner/total.svg)]() [![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner) [![Build status](https://ci.appveyor.com/api/projects/status/bxh346f3qoetemq1?svg=true)](https://ci.appveyor.com/project/Albermonte/nim-pools-hub-miner)
 > GUI by Albermonte, Miner by SushiPool
 
-## Download lastest release at:
+## Download lastest version from Releases Page:
 
-[Releases Page](https://github.com/Albermonte/nim-pools-hub-miner/releases/latest)
+### [⛏️ Download NIM Pools Hub Miner ⛏️](https://github.com/Albermonte/nim-pools-hub-miner/releases/latest)
+
+---
 
 #### Miner in action
 
