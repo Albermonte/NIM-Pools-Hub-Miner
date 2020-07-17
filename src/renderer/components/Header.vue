@@ -2,6 +2,7 @@
   <div id="titlebar">
     <div class="info-button">
       <button class="nq-button-s green" @click="openHub">More info at NIM Pools Hub</button>
+      <span class="miner-type">{{ `${cpuPage ? 'CPU' : 'GPU'} MINER` }}</span>
       <div id="title-bar-btns">
         <div class="icon" @click="minimizeButton">
           <svg style="width:24px;height:24px;" viewBox="0 0 24 24">
@@ -29,6 +30,12 @@ const { ipcRenderer, shell } = require("electron");
 const { BrowserWindow } = require("electron").remote;
 
 export default {
+  props: {
+    cpuPage: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
     minimizeButton() {
       const win = BrowserWindow.getFocusedWindow();
@@ -59,6 +66,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-left: auto;
 }
 
 .nq-button-s {
@@ -67,11 +75,17 @@ export default {
 
 .info-button {
   display: flex;
-  justify-content: space-between;
 }
 
 .icon {
   cursor: pointer;
   height: 24px;
+}
+
+.miner-type {
+  font-size: 14px;
+  font-weight: 900;
+  margin: auto;
+  margin-right: 140px;
 }
 </style>

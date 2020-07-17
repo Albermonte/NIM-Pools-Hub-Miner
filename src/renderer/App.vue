@@ -1,12 +1,17 @@
 <template>
   <div id="app" class="app">
-    <Header />
-    <PoolSelect v-if="showPoolList" @poolSelected="showPoolList = false" />
-    <LandingPage v-else @selectPool="showPoolList = true" />
+    <Sidebar :cpuPage="cpuPage" />
+    <div class="main-window">
+      <Header :cpuPage="cpuPage" />
+      <router-view></router-view>
+      <!-- <PoolSelect v-if="showPoolList" @poolSelected="showPoolList = false" />
+      <LandingPage v-else @selectPool="showPoolList = true" />-->
+    </div>
   </div>
 </template>
 
 <script>
+import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import LandingPage from "@/pages/LandingPage";
 import PoolSelect from "@/pages/PoolSelect";
@@ -15,14 +20,19 @@ import { ipcRenderer } from "electron";
 export default {
   name: "nim-pools-hub-miner",
   components: {
-    LandingPage,
+    Sidebar,
+    Header,
     PoolSelect,
-    Header
+    LandingPage
   },
   data() {
     return {
-      showPoolList: false
+      showPoolList: false,
+      cpuPage: true
     };
+  },
+  updated() {
+    this.cpuPage = this.$router.currentRoute.path === "/";
   },
   created() {
     ipcRenderer.on("log", message => {
@@ -38,15 +48,15 @@ export default {
 html,
 body,
 .app {
-  margin: 0;
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
 }
 
-html {
-  border-radius: 15px;
+.main-window {
+  height: 100%;
+  width: 100%;
 }
 </style>

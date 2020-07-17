@@ -290,13 +290,6 @@ export default {
   font-size: 12px;
 }
 
-.cpu-temp {
-  position: absolute;
-  bottom: 0;
-  left: 5px;
-  font-size: 12px;
-}
-
 .nq-button {
   margin: 1.5rem !important;
 }

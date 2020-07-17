@@ -35,7 +35,7 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     height: 560,
-    width: process.env.NODE_ENV === "development" ? 1010 : 580,
+    width: process.env.NODE_ENV === "development" ? 1090 : 660,
     center: true,
     resizable: false,
     fullscreenable: false,

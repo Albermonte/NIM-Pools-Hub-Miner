@@ -4,7 +4,7 @@
       <h2 class="nq-h2">Pool List</h2>
       <p class="nq-notice">Select which pool you want to mine on</p>
     </div>
-    <div class="nq-card-body" style="min-width: 100%; max-height: 390px;">
+    <div class="nq-card-body" style="min-width: 100%; max-height: 408px;">
       <vuescroll :ops="ops">
         <div class="pool-grid">
           <PoolCard
@@ -86,13 +86,13 @@ export default {
       store.set("host", this.host);
       store.set("port", this.port);
       store.set("poolDisplayName", this.host);
-      this.$emit("poolSelected");
+      this.$router.push("/");
     },
     setPool(pool) {
       store.set("host", pool.host);
       store.set("port", pool.port);
       store.set("poolDisplayName", pool.displayName);
-      this.$emit("poolSelected");
+      this.$router.push("/");
     }
   }
 };
@@ -151,19 +151,20 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: calc(100% - 75px);
 }
 
 .nq-card-body {
   padding: 1rem;
 }
 
-.nq-notice {
-  margin: 1.2rem 0 0;
+.nq-card-header .nq-notice {
+  margin: 5px;
 }
 
 .nq-card-header {
-  padding-top: 14px !important;
-  padding-bottom: 10px !important;
+  padding-top: 12px !important;
+  padding-bottom: 8px !important;
 }
 
 .nq-input-s {
