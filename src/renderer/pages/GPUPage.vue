@@ -70,7 +70,7 @@ export default {
     BalanceCard,
     LineChart,
     RangeSlider,
-    Alert
+    Alert,
   },
   data() {
     return {
@@ -94,16 +94,16 @@ export default {
             pointRadius: 2,
             fill: false,
             borderWidth: 3,
-            data: null
-          }
-        ]
+            data: null,
+          },
+        ],
       },
       time: [],
       hashrate: [],
       alertMessage: null,
       showAlert: false,
       appVersion: "0.0.0",
-      cpuTemp: 0
+      cpuTemp: 0,
     };
   },
   mounted() {
@@ -132,9 +132,9 @@ export default {
             pointRadius: 2,
             fill: false,
             borderWidth: 3,
-            data: this.hashrate
-          }
-        ]
+            data: this.hashrate,
+          },
+        ],
       };
     });
 
@@ -169,7 +169,7 @@ export default {
   computed: {
     development() {
       return process.env.NODE_ENV === "development";
-    }
+    },
   },
   methods: {
     startMining() {
@@ -183,7 +183,7 @@ export default {
       console.log({
         address,
         host,
-        port
+        port,
       });
       if (address === "" || host === "" || port === "") {
         this.alert("Fill all the inputs: Address, Pool Host and Pool Port");
@@ -198,12 +198,12 @@ export default {
         this.mining = true;
         //const expresion = /(vue-component-\d+-balance-card)/i
         //console.log(this.$children);
-        const hashrateComponent = this.$children.find(x =>
+        const hashrateComponent = this.$children.find((x) =>
           x.$vnode.tag.includes("hashrate-card")
         );
         hashrateComponent.startMining();
 
-        const balanceComponent = this.$children.find(x =>
+        const balanceComponent = this.$children.find((x) =>
           x.$vnode.tag.includes("balance-card")
         );
         balanceComponent.startMining();
@@ -211,14 +211,14 @@ export default {
         ipcRenderer.send("startMining", {
           address,
           host,
-          port
+          port,
         });
       }
     },
     stopMining() {
       this.mining = false;
       ipcRenderer.send("stopMining");
-      const hashrateComponent = this.$children.find(x =>
+      const hashrateComponent = this.$children.find((x) =>
         x.$vnode.tag.includes("hashrate-card")
       );
       hashrateComponent.stopMining();
@@ -234,14 +234,14 @@ export default {
     selectPool() {
       /* this.$emit("selectPool"); */
       this.$router.push("pools");
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
 .container {
-  width: calc(630px - 70px);
+  width: calc(630px - 100px);
   height: calc(100% - 47px);
   display: flex;
   flex-direction: column;
@@ -253,7 +253,7 @@ export default {
 
 .row {
   display: flex;
-  width: 82vw;
+  width: 80vw;
   justify-content: space-around;
 }
 

@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "functional": "cpp",
+        "xlocale": "cpp",
+        "istream": "cpp",
+        "memory": "cpp",
+        "type_traits": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp"
+    },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}

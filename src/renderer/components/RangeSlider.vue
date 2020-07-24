@@ -1,48 +1,48 @@
 <template>
-  <div class="rating">
-    <h2 class="nq-h2">Threads: {{ value }}</h2>
-    <input type="range" v-model="value" min="1" :max="maxThreads" />
+  <div style="text-align: center">
+    <h2 class="nq-h2" style="padding-bottom: 8px">Threads: {{ value }}</h2>
+    <vue-slider
+      :width="'32vw'"
+      v-model="value"
+      :tooltip="'none'"
+      :drag-on-click="true"
+      :silent="true"
+      :contained="true"
+      :min="1"
+      :max="maxThreads"
+      :included="true"
+    ></vue-slider>
   </div>
 </template>
 
 <script>
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/default.css";
 import { ipcRenderer } from "electron";
 const os = require("os");
 const Store = require("electron-store");
-
 const store = new Store();
 
 export default {
+  components: {
+    VueSlider,
+  },
   data() {
     return {
       value: store.get("threads") || Math.round(os.cpus().length / 1.25),
-      maxThreads: os.cpus().length
+      maxThreads: os.cpus().length,
+      marks: (val) => Number.isInteger(val),
     };
   },
   updated() {
     ipcRenderer.send("threads", this.value);
     store.set("threads", this.value);
-  }
+  },
 };
 </script>
 
-<style lang="sass" scoped>  
-.rating
-  text-align: center
-  
-.value
-  margin-top: 14px
-  margin-bottom: 8px
-  font-weight: 600
-  color: #E9B213
-    
-input[type="range"]
-  appearance: none
-  height: 6px
-  background-color: #eee
-  border-radius: 4px
-  width: 40vw
-  outline: none
-  transition: background-color 1s, height 1s
-
+<style>
+.vue-slider-process {
+  background: var(--nimiq-light-blue-bg);
+}
 </style>

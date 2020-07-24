@@ -6,9 +6,10 @@ import { battery, cpuTemperature } from "systeminformation";
 
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 
-import SushiPoolCpuMiner from "./miner/SushiPoolCpuMiner.js";
+import SushiPoolCpuMiner from "./CpuMiner/SushiPoolCpuMiner.js";
+import { humanHashes } from "./CpuMiner/Utils";
+
 import checkPoolOnline, { getGlobalHashrate } from "./api";
-import { humanHashes } from "./miner/Utils";
 
 // Disable security warnings
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -145,9 +146,9 @@ const $ = {};
 
 Nimiq.Log.instance.level = "info";
 
-const startMining = async (userAddress, poolHost, poolPort) => {
+const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
   const deviceName = hostname();
-
+  console.log(gpu);
   Nimiq.Log.i(TAG, `- network          = main`);
   Nimiq.Log.i(TAG, `- no. of threads   = ${maxThreads}`);
   Nimiq.Log.i(TAG, `- pool server      = ${poolHost}:${poolPort}`);
@@ -209,7 +210,7 @@ ipcMain.on("startMining", async (event, arg) => {
   const batteryData = await battery();
   if (batteryData.hasbattery && !batteryData.ischarging)
     mainWindow.webContents.send("laptopNotChargin");
-  startMining(arg.address, arg.host, arg.port);
+  startMining(arg.address, arg.host, arg.port, arg.gpu);
 });
 
 ipcMain.on("stopMining", () => {

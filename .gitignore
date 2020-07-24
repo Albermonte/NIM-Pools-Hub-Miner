@@ -9,3 +9,6 @@ npm-debug.log.*
 thumbs.db
 !.gitkeep
 debug.log
+
+nimiq_miner_cuda.node
+nimiq_miner_opencl.node
