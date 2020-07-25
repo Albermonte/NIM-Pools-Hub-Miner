@@ -2,7 +2,11 @@
 
 @echo off
 
+del /F/Q ".\binding.gyp"
 del /F/Q ".\build\*"
+del /F/Q ".\src\main\GpuMiner\nimiq_miner_cuda.node"
+del /F/Q ".\src\main\GpuMiner\nimiq_miner_opencl.node"
+
 RMDIR /Q/S ".\build\Release"
 
 echo Running Windows Postinstall
@@ -19,9 +23,9 @@ CALL .\node_modules\.bin\electron-rebuild.cmd
 xcopy /y ".\build\Release\nimiq_miner_cuda.node" ".\src\main\GpuMiner\nimiq_miner_cuda.node*"
 xcopy /y ".\build\Release\nimiq_miner_opencl.node" ".\src\main\GpuMiner\nimiq_miner_opencl.node*"
 
-del /F/Q ".\binding.gyp"
 del /F/Q ".\build\*"
 RMDIR /Q/S ".\build\Release"
+del /F/Q ".\binding.gyp"
 
 :: compact: that works on all CPUs
 :: sse2: works on most CPUs

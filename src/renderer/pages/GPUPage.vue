@@ -38,7 +38,12 @@
         >Change Pool</button>
       </div>
       <div class="col space-between">
-        <RangeSlider :class="mining ? 'disabled' : ''" />
+        <!-- <RangeSlider :class="mining ? 'disabled' : ''" /> -->
+        <h2 class="nq-h2" style="text-align: center; height: 50px">
+          Open
+          <a class="link">Settings</a>
+          <br />for miner tunning
+        </h2>
         <button v-if="!mining" @click="startMining" class="nq-button light-blue">Start Mining</button>
         <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
       </div>
@@ -212,6 +217,7 @@ export default {
           address,
           host,
           port,
+          gpu: true,
         });
       }
     },
@@ -305,5 +311,11 @@ export default {
 .disabled {
   pointer-events: none;
   opacity: 0.65;
+}
+
+.link {
+  font-weight: 800;
+  color: var(--nimiq-green);
+  cursor: pointer;
 }
 </style>

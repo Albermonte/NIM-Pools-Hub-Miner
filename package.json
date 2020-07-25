@@ -69,6 +69,7 @@
     "@nimiq/style": "^0.8.2",
     "@nimiq/utils": "^0.5.1",
     "axios": "^0.19.2",
+    "bindings": "https://github.com/Albermonte/node-bindings",
     "chart.js": "^2.9.3",
     "electron-log": "^4.2.2",
     "electron-store": "^5.2.0",

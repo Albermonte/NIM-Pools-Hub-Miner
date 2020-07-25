@@ -1,8 +1,6 @@
 #include <nan.h>
 
 #define __CL_ENABLE_EXCEPTIONS
-#define CL_HPP_ENABLE_PROGRAM_CONSTRUCTION_FROM_ARRAY_COMPATIBILITY 1
-
 #include <CL/cl.hpp>
 
 #include <atomic>

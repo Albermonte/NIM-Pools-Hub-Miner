@@ -2,12 +2,16 @@ import { cpus, hostname } from "os";
 let maxThreads = Math.round(cpus().length / 1.25);
 
 import * as Nimiq from "@nimiq/core";
-import { battery, cpuTemperature } from "systeminformation";
+import { battery, cpuTemperature, graphics } from "systeminformation";
 
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 
 import SushiPoolCpuMiner from "./CpuMiner/SushiPoolCpuMiner.js";
 import { humanHashes } from "./CpuMiner/Utils";
+
+import NativeMiner from "./GpuMiner/NativeMiner";
+import DumbPoolMiner from "./GpuMiner/DumbPoolMiner";
+import { getDeviceOptions } from "./GpuMiner/Utils";
 
 import checkPoolOnline, { getGlobalHashrate } from "./api";
 
@@ -147,8 +151,9 @@ const $ = {};
 Nimiq.Log.instance.level = "info";
 
 const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
+  // TODO: Let users set miner name on settings
   const deviceName = hostname();
-  console.log(gpu);
+  console.log("GPU: " + gpu);
   Nimiq.Log.i(TAG, `- network          = main`);
   Nimiq.Log.i(TAG, `- no. of threads   = ${maxThreads}`);
   Nimiq.Log.i(TAG, `- pool server      = ${poolHost}:${poolPort}`);
@@ -158,16 +163,64 @@ const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
     Nimiq.Log.w(TAG, `Debug mode has been enabled.`);
   }
 
-  const hashrate = 100; // 100 kH/s by default
+  const hashrate = gpu ? 200 : 100; // 100 kH/s by default
   const desiredSps = 5;
   const startDifficulty = (1e3 * hashrate * desiredSps) / (1 << 16);
-
+  const minerVersion = `NPH Miner ${gpu ? "GPU" : "CPU"} ${app.getVersion()}`;
+  const userAgent = `${minerVersion} (${Nimiq.PlatformUtils.userAgentString})`;
   const deviceData = {
-    deviceName: "test",
+    deviceName,
     startDifficulty,
-    minerVersion: "0.0.1",
+    minerVersion,
+    userAgent,
   };
-  $.miner = new SushiPoolCpuMiner(userAddress, deviceData, maxThreads);
+
+  if (!gpu) {
+    $.miner = new SushiPoolCpuMiner(userAddress, deviceData, maxThreads);
+    $.miner.on("hashrate-changed", (hashrates) => {
+      const totalHashRate = hashrates.reduce((a, b) => a + b, 0);
+      Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashRate)}`);
+      try {
+        mainWindow.webContents.send(
+          "hashrate-update",
+          humanHashes(totalHashRate)
+        );
+      } catch (e) {}
+    });
+  } else {
+    const vendor = (await graphics()).controllers[0].vendor;
+    const type = vendor.includes("Advanced Micro Devices") ? "opencl" : "cuda";
+    console.log(`GPU Type: ${type}`);
+
+    const argv = { threads: [2], cache: [4], jobs: [8] };
+    const deviceOptions = getDeviceOptions(argv);
+    $.nativeMiner = new NativeMiner(type, deviceOptions);
+    $.nativeMiner.on("hashrate-changed", (hashrates) => {
+      const totalHashrate = hashrates.reduce((a, v) => a + (v || 0), 0);
+      Nimiq.Log.i(
+        TAG,
+        `Hashrate: ${humanHashes(totalHashrate)} | ${hashrates
+          .map((hr, idx) => `GPU${idx}: ${humanHashes(hr)}`)
+          .filter((hr) => hr)
+          .join(" | ")}`
+      );
+      try {
+        mainWindow.webContents.send(
+          "hashrate-update",
+          humanHashes(totalHashrate)
+        );
+      } catch (e) {}
+    });
+    const deviceId = DumbPoolMiner.generateDeviceId();
+    Nimiq.Log.i(TAG, `- device id        = ${deviceId}`);
+
+    $.miner = new DumbPoolMiner(
+      $.nativeMiner,
+      Nimiq.Address.fromUserFriendlyAddress(userAddress),
+      deviceId,
+      deviceData
+    );
+  }
 
   $.miner.connect(poolHost, poolPort);
 
@@ -177,20 +230,6 @@ const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
 
   $.miner.on("pool-disconnected", function() {
     Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
-  });
-  $.miner.on("pool-connected", function() {
-    timeout = false;
-  });
-
-  $.miner.on("hashrate-changed", (hashrates) => {
-    const totalHashRate = hashrates.reduce((a, b) => a + b, 0);
-    Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashRate)}`);
-    try {
-      mainWindow.webContents.send(
-        "hashrate-update",
-        humanHashes(totalHashRate)
-      );
-    } catch (e) {}
   });
 
   $.miner.on("pool-balance", (balances) => {
@@ -217,6 +256,10 @@ ipcMain.on("stopMining", () => {
   if ($.miner) {
     $.miner.disconnect();
     delete $.miner;
+  }
+  if ($.nativeMiner) {
+    $.nativeMiner.stop();
+    delete $.nativeMiner;
   }
 });
 

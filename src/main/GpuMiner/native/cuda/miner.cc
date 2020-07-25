@@ -1,8 +1,6 @@
 #include <cuda_runtime.h>
 #include <nan.h>
 
-#define CL_HPP_ENABLE_PROGRAM_CONSTRUCTION_FROM_ARRAY_COMPATIBILITY 1
-
 #include <atomic>
 #include <cstdint>
 #include <cstdlib>
