@@ -55,7 +55,7 @@ export default {
   name: "pool-select",
   components: {
     PoolCard,
-    vuescroll
+    vuescroll,
   },
   data() {
     return {
@@ -65,14 +65,14 @@ export default {
       globalHashrate: 1,
       ops: {
         vuescroll: {
-          detectResize: false
+          detectResize: false,
         },
         bar: {
           background: "#21BCA5",
           keepShow: true,
-          opacity: 0.8
-        }
-      }
+          opacity: 0.8,
+        },
+      },
     };
   },
   mounted() {
@@ -86,15 +86,15 @@ export default {
       store.set("host", this.host);
       store.set("port", this.port);
       store.set("poolDisplayName", this.host);
-      this.$router.push("/");
+      this.$router.replace("/");
     },
     setPool(pool) {
       store.set("host", pool.host);
       store.set("port", pool.port);
       store.set("poolDisplayName", pool.displayName);
-      this.$router.push("/");
-    }
-  }
+      this.$router.replace("/");
+    },
+  },
 };
 </script>
 

@@ -35,10 +35,10 @@ export default {
     },
     openSettings() {},
     openCPU() {
-      this.$router.push("/");
+      this.$router.replace("/");
     },
     openGPU() {
-      this.$router.push("/gpu");
+      this.$router.replace("/gpu");
     }
   }
 };

@@ -1,4 +1,4 @@
-import { cpus, hostname } from "os";
+import { cpus, hostname, constants, setPriority } from "os";
 let maxThreads = Math.round(cpus().length / 1.25);
 
 import * as Nimiq from "@nimiq/core";
@@ -137,6 +137,10 @@ autoUpdater.on("update-downloaded", () => {
 });
 
 app.on("ready", () => {
+  // TODO: Let user choose
+  const priority = Object.entries(constants.priority)[5];
+  setPriority(priority[1]);
+
   if (process.env.NODE_ENV === "production")
     autoUpdater.checkForUpdatesAndNotify();
   autoUpdater.logger = require("electron-log");

@@ -4,8 +4,6 @@
     <div class="main-window">
       <Header :cpuPage="cpuPage" />
       <router-view></router-view>
-      <!-- <PoolSelect v-if="showPoolList" @poolSelected="showPoolList = false" />
-      <LandingPage v-else @selectPool="showPoolList = true" />-->
     </div>
   </div>
 </template>
@@ -13,32 +11,35 @@
 <script>
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
-import LandingPage from "@/pages/LandingPage";
-import PoolSelect from "@/pages/PoolSelect";
 import { ipcRenderer } from "electron";
+
+const Store = require("electron-store");
+const store = new Store();
 
 export default {
   name: "nim-pools-hub-miner",
   components: {
     Sidebar,
     Header,
-    PoolSelect,
-    LandingPage
   },
   data() {
     return {
       showPoolList: false,
-      cpuPage: true
+      cpuPage: true,
     };
   },
   updated() {
     this.cpuPage = this.$router.currentRoute.path === "/";
   },
   created() {
-    ipcRenderer.on("log", message => {
+    ipcRenderer.on("log", (message) => {
       console.log(message);
     });
-  }
+
+    const route = store.get("page");
+    this.$router.replace(route === "cpu" || !route ? "/" : "/gpu");
+    this.cpuPage = this.$router.currentRoute.path === "/";
+  },
 };
 </script>
 

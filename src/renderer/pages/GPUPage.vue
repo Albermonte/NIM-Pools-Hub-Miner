@@ -69,7 +69,7 @@ const Store = require("electron-store");
 const store = new Store();
 
 export default {
-  name: "landing-page",
+  name: "gpu-page",
   components: {
     HashrateCard,
     BalanceCard,
@@ -112,6 +112,8 @@ export default {
     };
   },
   mounted() {
+    store.set("page", "gpu");
+
     ipcRenderer.on("hashrate-update", (event, message) => {
       this.hashrate.push(Number(message.split(" ")[0]));
       if (this.hashrate.length > 15) {
@@ -239,7 +241,7 @@ export default {
     },
     selectPool() {
       /* this.$emit("selectPool"); */
-      this.$router.push("pools");
+      this.$router.replace("pools");
     },
   },
 };

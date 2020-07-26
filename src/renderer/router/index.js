@@ -7,8 +7,8 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "landing-page",
-      component: require("@/pages/LandingPage").default,
+      name: "cpu-page",
+      component: require("@/pages/CPUPage").default,
     },
     {
       path: "/pools",
