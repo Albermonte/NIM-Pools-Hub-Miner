@@ -25,11 +25,6 @@ const poolListArray = [
     url: "siriuspool.net:8443",
   },
   {
-    name: "balkanpool",
-    displayName: "Balkan Pool",
-    url: "pool.balkanminingpool.com:8444",
-  },
-  {
     name: "skypool",
     displayName: "Skypool",
     url: "sh1.nimiq.skypool.xyz:5000",
