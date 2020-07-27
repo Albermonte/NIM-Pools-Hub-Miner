@@ -20,8 +20,8 @@ CALL npm rebuild
 
 CALL .\node_modules\.bin\electron-rebuild.cmd
 
-xcopy /y ".\build\Release\nimiq_miner_cuda.node" ".\src\main\GpuMiner\nimiq_miner_cuda.node*"
-xcopy /y ".\build\Release\nimiq_miner_opencl.node" ".\src\main\GpuMiner\nimiq_miner_opencl.node*"
+xcopy /y ".\build\Release\nimiq_miner_cuda.node" ".\src\main\GpuMiner\modules\nimiq_miner_cuda.node*"
+xcopy /y ".\build\Release\nimiq_miner_opencl.node" ".\src\main\GpuMiner\modules\nimiq_miner_opencl.node*"
 
 del /F/Q ".\build\*"
 RMDIR /Q/S ".\build\Release"

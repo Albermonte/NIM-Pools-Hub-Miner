@@ -7,8 +7,8 @@ npm rebuild
 
 $(npm bin)/electron-rebuild
 
-cp "./build/Release/nimiq_miner_cuda.node" "./src/main/GpuMiner/nimiq_miner_cuda.node"
-cp "./build/Release/nimiq_miner_opencl.node" "./src/main/GpuMiner/nimiq_miner_opencl.node"
+cp "./build/Release/nimiq_miner_cuda.node" "./src/main/GpuMiner/modules/nimiq_miner_cuda.node"
+cp "./build/Release/nimiq_miner_opencl.node" "./src/main/GpuMiner/modules/nimiq_miner_opencl.node"
 
 rm "./binding.gyp"
 rm -rf "./build/*"

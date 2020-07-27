@@ -19,50 +19,6 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": "node postinstall"
   },
-  "build": {
-    "productName": "NIM Pools Hub Miner",
-    "appId": "com.nimpoolshub.nimiqguiminer",
-    "artifactName": "NIM-Pools-Hub-Miner-${os}-${arch}-${version}.${ext}",
-    "directories": {
-      "output": "build"
-    },
-    "files": [
-      "dist/electron/**/*"
-    ],
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
-    "mac": {
-      "icon": "icons/icon.icns"
-    },
-    "win": {
-      "icon": "icons/icon.ico"
-    },
-    "linux": {
-      "icon": "icons",
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    },
-    "publish": {
-      "provider": "github",
-      "vPrefixedTagName": true,
-      "releaseType": "release"
-    }
-  },
   "dependencies": {
     "@babel/runtime": "^7.10.4",
     "@nimiq/core": "^1.5.5",
