@@ -1,4 +1,9 @@
 const poolListArray = [
+   {
+    name: "Acemining",
+    displayName: "Acemining",
+    url: "pool.acemining.co:8443",
+  },
   {
     name: "nimpool",
     displayName: "Nimpool",
