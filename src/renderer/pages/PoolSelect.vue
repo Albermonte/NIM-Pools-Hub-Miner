@@ -48,6 +48,8 @@ import poolListArray from "@/store/poolList.js";
 import vuescroll from "vuescroll";
 import { ipcRenderer } from "electron";
 
+import { mapState } from "vuex";
+
 const Store = require("electron-store");
 const store = new Store();
 
@@ -75,6 +77,11 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapState({
+      currentPage: (state) => state.views.currentPage,
+    }),
+  },
   mounted() {
     ipcRenderer.send("getGlobalHashrate");
     ipcRenderer.on("getGlobalHashrateReply", (_, arg) => {
@@ -86,13 +93,13 @@ export default {
       store.set("host", this.host);
       store.set("port", this.port);
       store.set("poolDisplayName", this.host);
-      this.$router.replace("/");
+      this.$router.replace(`${this.currentPage}`);
     },
     setPool(pool) {
       store.set("host", pool.host);
       store.set("port", pool.port);
       store.set("poolDisplayName", pool.displayName);
-      this.$router.replace("/");
+      this.$router.replace(`${this.currentPage}`);
     },
   },
 };

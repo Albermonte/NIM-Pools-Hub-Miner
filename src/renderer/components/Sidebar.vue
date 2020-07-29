@@ -1,10 +1,10 @@
 <template>
   <div class="sidebar">
     <div style="color: white" class="gpu-cpu-holder">
-      <div class="nq-card" :class="cpuPage ? 'active' : ''" @click="openCPU">
+      <div class="nq-card" :class="currentPage === 'cpu' ? 'active' : ''" @click="openCPU">
         <div class="nq-card-body">CPU</div>
       </div>
-      <div class="nq-card" :class="!cpuPage ? 'active' : ''" @click="openGPU">
+      <div class="nq-card" :class="currentPage === 'gpu' ? 'active' : ''" @click="openGPU">
         <div class="nq-card-body">GPU</div>
       </div>
     </div>
@@ -21,26 +21,31 @@
 
 <script>
 import { shell } from "electron";
+
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "Sidebar",
-  props: {
-    cpuPage: {
-      type: Boolean,
-      default: true
-    }
+  computed: {
+    ...mapState({
+      currentPage: (state) => state.views.currentPage,
+    }),
   },
   methods: {
+    ...mapActions(["setcurrentPage"]),
     openHub() {
       shell.openExternal("https://hub.shortnim.me/");
     },
     openSettings() {},
     openCPU() {
+      this.setcurrentPage("cpu");
       this.$router.replace("/");
     },
     openGPU() {
+      this.setcurrentPage("gpu");
       this.$router.replace("/gpu");
-    }
-  }
+    },
+  },
 };
 </script>
 

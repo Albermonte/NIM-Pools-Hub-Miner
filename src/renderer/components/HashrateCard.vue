@@ -4,7 +4,7 @@
       <span class="nq-h2">Miner Hashrate</span>
     </div>
     <div class="nq-card-body">
-      <div v-if="!loading">{{ hashrate }}</div>
+      <div v-if="!loading">{{ currentPage === 'cpu' ? hashrateCPU : hashrateGPU}}</div>
       <div v-else>
         <CircleSpinner />
       </div>
@@ -16,32 +16,31 @@
 import { ipcRenderer } from "electron";
 import CircleSpinner from "@/components/CircleSpinner";
 
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "hashrate-card",
   components: {
-    CircleSpinner
+    CircleSpinner,
   },
-  data() {
-    return {
-      loading: false,
-      hashrate: "0 kH/s"
-    };
-  },
-  mounted() {
-    ipcRenderer.on("hashrate-update", (event, message) => {
-      this.loading = false;
-      this.hashrate = message;
-    });
-  },
-  methods: {
-    startMining() {
-      this.loading = true;
+  computed: {
+    ...mapState({
+      hashrateGPU: (state) => state.hashrate.gpu,
+      hashrateCPU: (state) => state.hashrate.cpu,
+      currentPage: (state) => state.views.currentPage,
+      miningCPU: (state) => state.hashrate.mining.cpu,
+      miningGPU: (state) => state.hashrate.mining.gpu,
+    }),
+    loading() {
+      if (this.currentPage === "cpu") {
+        return this.miningCPU && this.hashrateCPU === "0 kH/s";
+      } else if (this.currentPage === "gpu") {
+        return this.miningGPU && this.hashrateGPU === "0 kH/s";
+      } else {
+        return false;
+      }
     },
-    stopMining() {
-      this.loading = false;
-      this.hashrate = "0 kH/s";
-    }
-  }
+  },
 };
 </script>
 

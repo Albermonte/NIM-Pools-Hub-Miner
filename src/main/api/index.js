@@ -165,6 +165,64 @@ const isNimiqwatchOnline = async (retry) => {
   }
 };
 
+const isAceminingOnline = async (retry) => {
+  try {
+    const { hashrate } = (
+      await axios.get("https://api.acemining.co/api/hashrate", {
+        timeout: 20000,
+      })
+    ).data;
+
+    const { total } = (
+      await axios.get("https://api.acemining.co/api/miners", {
+        timeout: 20000,
+      })
+    ).data;
+
+    const { poolfee, minimal } = (
+      await axios.get("https://api.acemining.co/api/poolinfo", {
+        timeout: 20000,
+      })
+    ).data;
+
+    return {
+      online: total > 0 || hashrate > 0,
+      hashrate: parseHashrate(hashrate),
+      hashrateComplete: Number(hashrate.toFixed(0)),
+      pool_fee: poolfee,
+      minimum_payout: Number(minimal.match(/\d+/)[0]),
+    };
+  } catch {
+    if (retry) return isAceminingOnline(false);
+    return false;
+  }
+};
+
+const isHashexpressOnline = async (retry) => {
+  try {
+    const { device_count, hashrate } = (
+      await axios.get("https://nim.hash.express/api/stats.json", {
+        timeout: 20000,
+      })
+    ).data;
+    const { fee } = (
+      await axios.get("https://nim.hash.express/api/pool.json", {
+        timeout: 20000,
+      })
+    ).data;
+    return {
+      online: device_count > 0 || hashrate > 0,
+      hashrate: parseHashrate(hashrate),
+      hashrateComplete: Number(hashrate.toFixed(0)),
+      pool_fee: (fee < 1 ? parseFloat(fee).toFixed(2) : fee) + "%",
+      minimum_payout: 10,
+    };
+  } catch {
+    if (retry) return isHashexpressOnline(false);
+    return false;
+  }
+};
+
 export const getGlobalHashrate = async () => {
   const { estimated_global_hashrate } = (
     await axios.get("https://nimiq.mopsus.com/api/quick-stats", {

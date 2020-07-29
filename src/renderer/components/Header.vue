@@ -2,7 +2,7 @@
   <div id="titlebar">
     <div class="info-button">
       <button class="nq-button-s green" @click="openHub">More info at NIM Pools Hub</button>
-      <span class="miner-type">{{ `${cpuPage ? 'CPU' : 'GPU'} MINER` }}</span>
+      <span class="miner-type">{{ `${currentPage === 'cpu' ? 'CPU' : 'GPU'} MINER` }}</span>
       <div id="title-bar-btns">
         <div class="icon" @click="minimizeButton">
           <svg style="width:24px;height:24px;" viewBox="0 0 24 24">
@@ -29,12 +29,19 @@
 const { ipcRenderer, shell } = require("electron");
 const { BrowserWindow } = require("electron").remote;
 
+import { mapState } from "vuex";
+
 export default {
   props: {
     cpuPage: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+  },
+  computed: {
+    ...mapState({
+      currentPage: (state) => state.views.currentPage,
+    }),
   },
   methods: {
     minimizeButton() {
@@ -48,8 +55,8 @@ export default {
     },
     openHub() {
       shell.openExternal("https://hub.shortnim.me/");
-    }
-  }
+    },
+  },
 };
 </script>
 

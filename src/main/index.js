@@ -1,5 +1,4 @@
-import { cpus, hostname, constants, setPriority } from "os";
-let maxThreads = Math.round(cpus().length / 1.25);
+import { hostname, constants, setPriority } from "os";
 
 import * as Nimiq from "@nimiq/core";
 import { battery, cpuTemperature, graphics } from "systeminformation";
@@ -14,6 +13,8 @@ import DumbPoolMiner from "./GpuMiner/DumbPoolMiner";
 import { getDeviceOptions } from "./GpuMiner/Utils";
 
 import checkPoolOnline, { getGlobalHashrate } from "./api";
+
+import store from "../renderer/store";
 
 // Disable security warnings
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -49,6 +50,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
+      experimentalFeatures: true,
     },
   });
   if (process.env.NODE_ENV !== "development") mainWindow.removeMenu();
@@ -88,6 +90,12 @@ function createWindow() {
   log("Nimiq initialization");
   Nimiq.GenesisConfig.main();
 
+  store.dispatch("setAppVersion", app.getVersion());
+  store.dispatch("setCpuHashrate", "0 kH/s");
+  store.dispatch("setGpuHashrate", "0 kH/s");
+  store.dispatch("setMiningCPU", false);
+  store.dispatch("setMiningGPU", false);
+
   mainWindow.loadURL(winURL);
 
   mainWindow.on("closed", () => {
@@ -107,11 +115,6 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
-});
-
-ipcMain.on("app-version", (event, arg) => {
-  log("App Version: " + app.getVersion());
-  event.reply("app-version-reply", app.getVersion());
 });
 
 // Disabled until Temperatures are reliable, getting 16ºC on my PC, thanks to wmic reporting bad temperatures
@@ -154,9 +157,14 @@ const $ = {};
 
 Nimiq.Log.instance.level = "info";
 
-const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
+const startMining = async (gpu = false) => {
   // TODO: Let users set miner name on settings
   const deviceName = hostname();
+  const maxThreads = store.state.settings.threads;
+  const userAddress = store.state.settings.address;
+  const poolHost = store.state.settings.host;
+  const poolPort = store.state.settings.port;
+
   console.log("GPU: " + gpu);
   Nimiq.Log.i(TAG, `- network          = main`);
   Nimiq.Log.i(TAG, `- no. of threads   = ${maxThreads}`);
@@ -167,7 +175,7 @@ const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
     Nimiq.Log.w(TAG, `Debug mode has been enabled.`);
   }
 
-  const hashrate = gpu ? 200 : 100; // 100 kH/s by default
+  const hashrate = gpu ? 200 : 50; // 100 kH/s by default
   const desiredSps = 5;
   const startDifficulty = (1e3 * hashrate * desiredSps) / (1 << 16);
   const minerVersion = `NPH Miner ${gpu ? "GPU" : "CPU"} ${app.getVersion()}`;
@@ -182,13 +190,31 @@ const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
   if (!gpu) {
     $.miner = new SushiPoolCpuMiner(userAddress, deviceData, maxThreads);
     $.miner.on("hashrate-changed", (hashrates) => {
-      const totalHashRate = hashrates.reduce((a, b) => a + b, 0);
-      Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashRate)}`);
+      const totalHashrate = hashrates.reduce((a, b) => a + b, 0);
+      Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashrate)}`);
       try {
-        mainWindow.webContents.send(
+        /* mainWindow.webContents.send(
           "hashrate-update",
           humanHashes(totalHashRate)
-        );
+        ); */
+        store.dispatch("setCpuHashrate", humanHashes(totalHashrate));
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    $.miner.connect(poolHost, poolPort);
+
+    $.miner.on("share", (nonce) => {
+      Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
+    });
+
+    $.miner.on("pool-disconnected", function() {
+      Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
+    });
+
+    $.miner.on("pool-balance", (balances) => {
+      try {
+        mainWindow.webContents.send("pool-balance", balances);
       } catch (e) {}
     });
   } else {
@@ -209,61 +235,67 @@ const startMining = async (userAddress, poolHost, poolPort, gpu = false) => {
           .join(" | ")}`
       );
       try {
-        mainWindow.webContents.send(
+        /* mainWindow.webContents.send(
           "hashrate-update",
           humanHashes(totalHashrate)
-        );
+        ); */
+        store.dispatch("setGpuHashrate", humanHashes(totalHashrate));
       } catch (e) {}
     });
     const deviceId = DumbPoolMiner.generateDeviceId();
     Nimiq.Log.i(TAG, `- device id        = ${deviceId}`);
 
-    $.miner = new DumbPoolMiner(
+    $.minerGPU = new DumbPoolMiner(
       $.nativeMiner,
       Nimiq.Address.fromUserFriendlyAddress(userAddress),
       deviceId,
       deviceData
     );
+
+    $.minerGPU.connect(poolHost, poolPort);
+
+    $.minerGPU.on("share", (nonce) => {
+      Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
+    });
+
+    $.minerGPU.on("pool-disconnected", function() {
+      Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
+    });
+
+    $.minerGPU.on("pool-balance", (balances) => {
+      try {
+        mainWindow.webContents.send("pool-balance", balances);
+      } catch (e) {}
+    });
   }
-
-  $.miner.connect(poolHost, poolPort);
-
-  $.miner.on("share", (nonce) => {
-    Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
-  });
-
-  $.miner.on("pool-disconnected", function() {
-    Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
-  });
-
-  $.miner.on("pool-balance", (balances) => {
-    try {
-      mainWindow.webContents.send("pool-balance", balances);
-    } catch (e) {}
-  });
 };
 
 // Messages from render process
-
-ipcMain.on("threads", (event, arg) => {
-  maxThreads = arg;
-});
 
 ipcMain.on("startMining", async (event, arg) => {
   const batteryData = await battery();
   if (batteryData.hasbattery && !batteryData.ischarging)
     mainWindow.webContents.send("laptopNotChargin");
-  startMining(arg.address, arg.host, arg.port, arg.gpu);
+  startMining(arg.gpu);
 });
 
-ipcMain.on("stopMining", () => {
-  if ($.miner) {
-    $.miner.disconnect();
-    delete $.miner;
-  }
-  if ($.nativeMiner) {
-    $.nativeMiner.stop();
-    delete $.nativeMiner;
+ipcMain.on("stopMining", async (event, arg) => {
+  if (arg === "cpu") {
+    if ($.miner) {
+      $.miner.disconnect();
+      delete $.miner;
+      store.dispatch("setCpuHashrate", "0 kH/s");
+    }
+  } else {
+    if ($.minerGPU) {
+      $.minerGPU.disconnect();
+      delete $.minerGPU;
+    }
+    if ($.nativeMiner) {
+      $.nativeMiner.stop();
+      delete $.nativeMiner;
+      store.dispatch("setGpuHashrate", "0 kH/s");
+    }
   }
 });
 

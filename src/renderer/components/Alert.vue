@@ -19,22 +19,22 @@ export default {
   props: {
     message: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   methods: {
     hideAlert() {
       this.$emit("hideAlert");
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 .alert {
   position: absolute;
-  height: 100%;
-  width: 100%;
+  height: 90%;
+  width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,9 +50,9 @@ export default {
   padding-bottom: 14px;
 }
 
-.nq-card-body{
-    text-align: center;
-    padding: 14px;
+.nq-card-body {
+  text-align: center;
+  padding: 14px;
 }
 
 .nq-card-footer {

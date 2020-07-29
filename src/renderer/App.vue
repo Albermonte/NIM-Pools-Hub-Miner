@@ -1,9 +1,13 @@
 <template>
   <div id="app" class="app">
-    <Sidebar :cpuPage="cpuPage" />
+    <Sidebar style="z-index: 1" />
     <div class="main-window">
-      <Header :cpuPage="cpuPage" />
-      <router-view></router-view>
+      <Header />
+      <transition name="pop" mode="out-in">
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
     </div>
   </div>
 </template>
@@ -13,8 +17,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { ipcRenderer } from "electron";
 
-const Store = require("electron-store");
-const store = new Store();
+import { mapState } from "vuex";
 
 export default {
   name: "nim-pools-hub-miner",
@@ -28,17 +31,18 @@ export default {
       cpuPage: true,
     };
   },
-  updated() {
-    this.cpuPage = this.$router.currentRoute.path === "/";
+  computed: {
+    ...mapState({
+      currentPage: (state) => state.views.currentPage,
+    }),
   },
   created() {
     ipcRenderer.on("log", (message) => {
       console.log(message);
     });
-
-    const route = store.get("page");
-    this.$router.replace(route === "cpu" || !route ? "/" : "/gpu");
-    this.cpuPage = this.$router.currentRoute.path === "/";
+  },
+  mounted() {
+    this.$router.replace(this.currentPage === "cpu" ? "/" : "/gpu");
   },
 };
 </script>
@@ -54,10 +58,26 @@ body,
   display: flex;
   align-items: center;
   flex-direction: row;
+  overflow-x: hidden;
 }
 
 .main-window {
   height: 100%;
   width: 100%;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: transform 0.15s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.2s linear;
+}
+
+.pop-enter {
+  opacity: 0;
+  transform: scale(0.9) translateX(-100%);
+}
+
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.9) translateX(100%);
 }
 </style>

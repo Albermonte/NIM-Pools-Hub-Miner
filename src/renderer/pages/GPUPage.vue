@@ -1,19 +1,11 @@
 <template>
   <div class="container">
     <div class="row py-2">
-      <div v-if="development" class="col">
+      <div class="col">
         <input
           placeholder="Nimiq Address"
-          id="address"
-          v-model="address"
-          class="nq-input-s text-center"
-          style="width: 100%; text-transform:uppercase;"
-        />
-      </div>
-      <div v-else class="col">
-        <input
-          placeholder="Nimiq Address"
-          v-model="address"
+          :value="address"
+          @input="updateAddress"
           class="nq-input-s text-center"
           style="width: 100%; text-transform:uppercase;"
         />
@@ -34,17 +26,16 @@
         <button
           class="nq-button orange"
           @click="selectPool"
-          :class="mining ? 'disabled' : ''"
+          :class="miningGPU ? 'disabled' : ''"
         >Change Pool</button>
       </div>
       <div class="col space-between">
-        <!-- <RangeSlider :class="mining ? 'disabled' : ''" /> -->
         <h2 class="nq-h2" style="text-align: center; height: 50px">
           Open
           <a class="link">Settings</a>
           <br />for miner tunning
         </h2>
-        <button v-if="!mining" @click="startMining" class="nq-button light-blue">Start Mining</button>
+        <button v-if="!miningGPU" @click="startMining" class="nq-button light-blue">Start Mining</button>
         <button v-else @click="stopMining" class="nq-button red">Stop Mining</button>
       </div>
     </div>
@@ -65,11 +56,10 @@ import Alert from "@/components/Alert.vue";
 
 import * as NimiqUtils from "@nimiq/utils";
 
-const Store = require("electron-store");
-const store = new Store();
+import { mapActions, mapState } from "vuex";
 
 export default {
-  name: "gpu-page",
+  name: "cpu-page",
   components: {
     HashrateCard,
     BalanceCard,
@@ -79,14 +69,6 @@ export default {
   },
   data() {
     return {
-      address:
-        process.env.NODE_ENV === "development"
-          ? "NQ65 GS91 H8CS QFAN 1EVS UK3G X7PL L9N1 X4KC"
-          : store.get("address"),
-      host: store.get("host") || "eu.nimpool.io",
-      port: store.get("port") || 8444,
-      displayName: store.get("poolDisplayName") || "Nimpool",
-      mining: false,
       datacollection: {
         labels: null,
         datasets: [
@@ -107,13 +89,20 @@ export default {
       hashrate: [],
       alertMessage: null,
       showAlert: false,
-      appVersion: "0.0.0",
       cpuTemp: 0,
     };
   },
-  mounted() {
-    store.set("page", "gpu");
-
+  computed: {
+    ...mapState({
+      appVersion: (state) => state.views.appVersion,
+      address: (state) => state.settings.address,
+      host: (state) => state.settings.host,
+      port: (state) => state.settings.port,
+      displayName: (state) => state.settings.displayName,
+      miningGPU: (state) => state.hashrate.mining.gpu,
+    }),
+  },
+  created() {
     ipcRenderer.on("hashrate-update", (event, message) => {
       this.hashrate.push(Number(message.split(" ")[0]));
       if (this.hashrate.length > 15) {
@@ -150,13 +139,6 @@ export default {
       this.alert("New update downloaded, restarting in 5 seconds...");
     });
 
-    // Ask backend which is the app version
-    ipcRenderer.send("app-version");
-    ipcRenderer.on("app-version-reply", (event, message) => {
-      console.log("App Version: " + message);
-      this.appVersion = message;
-    });
-
     // Disabled until Temperatures are reliable, getting 16ºC on my PC, thanks to wmic reporting bad temperatures
     // Check immediately what's the CPU Temp and add an interval
     /* ipcRenderer.send("cpu-temp");
@@ -173,16 +155,10 @@ export default {
       );
     });
   },
-  computed: {
-    development() {
-      return process.env.NODE_ENV === "development";
-    },
-  },
   methods: {
+    ...mapActions(["setAddress", "setMiningGPU"]),
     startMining() {
-      ipcRenderer.send("stopMining");
-      console.log(this.address);
-      store.set("address", this.address);
+      ipcRenderer.send("stopMining", "gpu");
 
       const address = this.address;
       const host = this.host;
@@ -202,13 +178,7 @@ export default {
           this.alert(e);
           return;
         }
-        this.mining = true;
-        //const expresion = /(vue-component-\d+-balance-card)/i
-        //console.log(this.$children);
-        const hashrateComponent = this.$children.find((x) =>
-          x.$vnode.tag.includes("hashrate-card")
-        );
-        hashrateComponent.startMining();
+        this.setMiningGPU(true);
 
         const balanceComponent = this.$children.find((x) =>
           x.$vnode.tag.includes("balance-card")
@@ -224,12 +194,9 @@ export default {
       }
     },
     stopMining() {
-      this.mining = false;
-      ipcRenderer.send("stopMining");
-      const hashrateComponent = this.$children.find((x) =>
-        x.$vnode.tag.includes("hashrate-card")
-      );
-      hashrateComponent.stopMining();
+      this.setMiningGPU(false);
+
+      ipcRenderer.send("stopMining", "gpu");
     },
     alert(e) {
       this.alertMessage = e;
@@ -240,8 +207,10 @@ export default {
       this.alertMessage = null;
     },
     selectPool() {
-      /* this.$emit("selectPool"); */
       this.$router.replace("pools");
+    },
+    updateAddress(e) {
+      this.$store.dispatch("setAddress", e.target.value);
     },
   },
 };
@@ -295,6 +264,13 @@ export default {
   position: absolute;
   bottom: 0;
   right: 5px;
+  font-size: 12px;
+}
+
+.cpu-temp {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
   font-size: 12px;
 }
 
