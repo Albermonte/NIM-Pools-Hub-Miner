@@ -11,14 +11,19 @@ export default new Router({
       component: require("@/pages/CPUPage").default,
     },
     {
+      path: "/gpu",
+      name: "gpu-page",
+      component: require("@/pages/GPUPage").default,
+    },
+    {
       path: "/pools",
       name: "pool-select",
       component: require("@/pages/PoolSelect").default,
     },
     {
-      path: "/gpu",
-      name: "gpu-page",
-      component: require("@/pages/GPUPage").default,
+      path: "/settings",
+      name: "settings-page",
+      component: require("@/pages/Settings").default,
     },
     {
       path: "*",

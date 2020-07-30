@@ -65,24 +65,6 @@ export default {
   },
   data() {
     return {
-      datacollection: {
-        labels: null,
-        datasets: [
-          {
-            label: "Hashrate",
-            borderColor: "#E9B213",
-            pointBorderColor: "#E9B213",
-            pointBackgroundColor: "#E9B213",
-            pointBorderWidth: 5,
-            pointRadius: 2,
-            fill: false,
-            borderWidth: 3,
-            data: null,
-          },
-        ],
-      },
-      time: [],
-      hashrate: [],
       alertMessage: null,
       showAlert: false,
       cpuTemp: 0,
@@ -96,24 +78,12 @@ export default {
       port: (state) => state.settings.port,
       displayName: (state) => state.settings.displayName,
       miningCPU: (state) => state.hashrate.mining.cpu,
+      cpuArray: (state) => state.hashrate.cpuArray,
+      cpuTime: (state) => state.hashrate.cpuTime,
     }),
-  },
-  created() {
-    ipcRenderer.on("hashrate-update", (event, message) => {
-      this.hashrate.push(Number(message.split(" ")[0]));
-      if (this.hashrate.length > 15) {
-        this.hashrate.shift();
-      }
-
-      this.time.push(
-        `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-      );
-      if (this.time.length > 15) {
-        this.time.shift();
-      }
-
-      this.datacollection = {
-        labels: this.time,
+    datacollection() {
+      return {
+        labels: this.cpuTime,
         datasets: [
           {
             label: "Hashrate",
@@ -124,12 +94,13 @@ export default {
             pointRadius: 2,
             fill: false,
             borderWidth: 3,
-            data: this.hashrate,
+            data: this.cpuArray,
           },
         ],
       };
-    });
-
+    },
+  },
+  created() {
     // If updated finished downloading Alert the user the app is going to restart
     ipcRenderer.on("update-downloaded", () => {
       this.alert("New update downloaded, restarting in 5 seconds...");
@@ -190,7 +161,6 @@ export default {
     },
     stopMining() {
       this.setMiningCPU(false);
-
       ipcRenderer.send("stopMining", "cpu");
     },
     alert(e) {

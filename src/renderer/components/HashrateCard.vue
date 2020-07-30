@@ -16,7 +16,7 @@
 import { ipcRenderer } from "electron";
 import CircleSpinner from "@/components/CircleSpinner";
 
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 
 export default {
   name: "hashrate-card",

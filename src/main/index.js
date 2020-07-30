@@ -91,8 +91,8 @@ function createWindow() {
   Nimiq.GenesisConfig.main();
 
   store.dispatch("setAppVersion", app.getVersion());
-  store.dispatch("setCpuHashrate", "0 kH/s");
-  store.dispatch("setGpuHashrate", "0 kH/s");
+  store.dispatch("setCpuHashrate", null);
+  store.dispatch("setGpuHashrate", null);
   store.dispatch("setMiningCPU", false);
   store.dispatch("setMiningGPU", false);
 

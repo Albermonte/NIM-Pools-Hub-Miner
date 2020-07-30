@@ -2,6 +2,7 @@ const os = require("os");
 const crypto = require("crypto");
 const Nimiq = require("@nimiq/core");
 const WebSocket = require("ws");
+import store from "../../renderer/store";
 
 export default class DumbPoolMiner extends Nimiq.Observable {
   /**
@@ -16,6 +17,7 @@ export default class DumbPoolMiner extends Nimiq.Observable {
     this._nativeMiner = nativeMiner;
     this._address = address;
     this._deviceId = deviceId;
+    store.dispatch("setGpuDeviceId", this._deviceId);
     this._deviceData = deviceData;
 
     this._numShares = 0;

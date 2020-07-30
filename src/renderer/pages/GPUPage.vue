@@ -32,7 +32,7 @@
       <div class="col space-between">
         <h2 class="nq-h2" style="text-align: center; height: 50px">
           Open
-          <a class="link">Settings</a>
+          <a class="link" @click="openSettings">Settings</a>
           <br />for miner tunning
         </h2>
         <button v-if="!miningGPU" @click="startMining" class="nq-button light-blue">Start Mining</button>
@@ -69,24 +69,6 @@ export default {
   },
   data() {
     return {
-      datacollection: {
-        labels: null,
-        datasets: [
-          {
-            label: "Hashrate",
-            borderColor: "#E9B213",
-            pointBorderColor: "#E9B213",
-            pointBackgroundColor: "#E9B213",
-            pointBorderWidth: 5,
-            pointRadius: 2,
-            fill: false,
-            borderWidth: 3,
-            data: null,
-          },
-        ],
-      },
-      time: [],
-      hashrate: [],
       alertMessage: null,
       showAlert: false,
       cpuTemp: 0,
@@ -100,24 +82,12 @@ export default {
       port: (state) => state.settings.port,
       displayName: (state) => state.settings.displayName,
       miningGPU: (state) => state.hashrate.mining.gpu,
+      gpuArray: (state) => state.hashrate.gpuArray,
+      gpuTime: (state) => state.hashrate.gpuTime,
     }),
-  },
-  created() {
-    ipcRenderer.on("hashrate-update", (event, message) => {
-      this.hashrate.push(Number(message.split(" ")[0]));
-      if (this.hashrate.length > 15) {
-        this.hashrate.shift();
-      }
-
-      this.time.push(
-        `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-      );
-      if (this.time.length > 15) {
-        this.time.shift();
-      }
-
-      this.datacollection = {
-        labels: this.time,
+    datacollection() {
+      return {
+        labels: this.gpuTime,
         datasets: [
           {
             label: "Hashrate",
@@ -128,12 +98,13 @@ export default {
             pointRadius: 2,
             fill: false,
             borderWidth: 3,
-            data: this.hashrate,
+            data: this.gpuArray,
           },
         ],
       };
-    });
-
+    },
+  },
+  created() {
     // If updated finished downloading Alert the user the app is going to restart
     ipcRenderer.on("update-downloaded", () => {
       this.alert("New update downloaded, restarting in 5 seconds...");
@@ -195,7 +166,6 @@ export default {
     },
     stopMining() {
       this.setMiningGPU(false);
-
       ipcRenderer.send("stopMining", "gpu");
     },
     alert(e) {
@@ -211,6 +181,9 @@ export default {
     },
     updateAddress(e) {
       this.$store.dispatch("setAddress", e.target.value);
+    },
+    openSettings() {
+      this.$router.replace("/settings");
     },
   },
 };

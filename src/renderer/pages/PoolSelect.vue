@@ -48,10 +48,7 @@ import poolListArray from "@/store/poolList.js";
 import vuescroll from "vuescroll";
 import { ipcRenderer } from "electron";
 
-import { mapState } from "vuex";
-
-const Store = require("electron-store");
-const store = new Store();
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "pool-select",
@@ -89,16 +86,17 @@ export default {
     });
   },
   methods: {
+    ...mapActions(["setHost", "setPort", "setDisplayName"]),
     setCustomPool() {
-      store.set("host", this.host);
-      store.set("port", this.port);
-      store.set("poolDisplayName", this.host);
+      this.setHost(this.host);
+      this.setPort(this.port);
+      this.setDisplayName(this.host);
       this.$router.replace(`${this.currentPage}`);
     },
     setPool(pool) {
-      store.set("host", pool.host);
-      store.set("port", pool.port);
-      store.set("poolDisplayName", pool.displayName);
+      this.setHost(pool.host);
+      this.setPort(pool.port);
+      this.setDisplayName(pool.displayName);
       this.$router.replace(`${this.currentPage}`);
     },
   },

@@ -4,6 +4,7 @@ const Nimiq = require("@nimiq/core");
 const MinerWorkerPool = Nimiq.MinerWorkerPool;
 const WebSocket = require("ws");
 const Utils = require("./Utils");
+import store from "../../renderer/store";
 
 const GENESIS_HASH_MAINNET = "Jkqvik+YKKdsVQY12geOtGYwahifzANxC+6fZJyGnRI=";
 const HASHRATE_REPORT_INTERVAL = 5; // seconds
@@ -15,8 +16,8 @@ export default class SushiPoolCpuMiner extends Nimiq.Observable {
 
     this._address = address;
     this._deviceId = this._getDeviceId() + 1;
+    store.dispatch("setCpuDeviceId", this._deviceId);
     this._deviceData = deviceData;
-
     this._miner = new MinerWorkerPool(threads);
     this._hashes = 0;
     this._lastHashRates = [];

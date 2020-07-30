@@ -9,6 +9,8 @@ const state = {
   host: "eu.nimpool.io",
   port: 8444,
   displayName: "Nimpool",
+  cpuDeviceId: 0,
+  gpuDeviceId: 0,
 };
 
 const mutations = {
@@ -22,10 +24,16 @@ const mutations = {
     state.host = value;
   },
   SET_PORT(state, value) {
-    state.displayName = value;
+    state.port = value;
   },
   SET_DISPLAY_NAME(state, value) {
-    state.threads = value;
+    state.displayName = value;
+  },
+  SET_CPU_DEVICE_ID(state, value) {
+    state.cpuDeviceId = value;
+  },
+  SET_GPU_DEVICE_ID(state, value) {
+    state.gpuDeviceId = value;
   },
 };
 
@@ -44,6 +52,12 @@ const actions = {
   },
   setDisplayName({ commit }, value) {
     commit("SET_DISPLAY_NAME", value);
+  },
+  setCpuDeviceId({ commit }, value) {
+    commit("SET_CPU_DEVICE_ID", value);
+  },
+  setGpuDeviceId({ commit }, value) {
+    commit("SET_GPU_DEVICE_ID", value);
   },
 };
 
