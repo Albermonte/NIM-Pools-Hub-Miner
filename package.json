@@ -83,7 +83,6 @@
     "osx-temperature-sensor": "1.0.7"
   },
   "resolutions": {
-    "bindings": "https://github.com/Albermonte/node-bindings",
     "node-lmdb": "https://github.com/tomkha/node-lmdb#win_delay_load_hook"
   }
 }
