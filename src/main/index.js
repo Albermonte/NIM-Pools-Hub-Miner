@@ -1,4 +1,4 @@
-import { hostname, constants, setPriority } from "os";
+import { constants, setPriority } from "os";
 
 import * as Nimiq from "@nimiq/core";
 import { battery, cpuTemperature, graphics } from "systeminformation";
@@ -140,10 +140,6 @@ autoUpdater.on("update-downloaded", () => {
 });
 
 app.on("ready", () => {
-  // TODO: Let user choose
-  const priority = Object.entries(constants.priority)[5];
-  setPriority(priority[1]);
-
   if (process.env.NODE_ENV === "production")
     autoUpdater.checkForUpdatesAndNotify();
   autoUpdater.logger = require("electron-log");
@@ -158,9 +154,13 @@ const $ = {};
 Nimiq.Log.instance.level = "info";
 
 const startMining = async (gpu = false) => {
-  // TODO: Let users set miner name on settings
-  const deviceName = hostname();
-  const maxThreads = store.state.settings.threads;
+  const priority = Object.entries(constants.priority)[
+    store.state.settings.cpuPriority
+  ];
+  setPriority(priority[1]);
+
+  const deviceName = store.state.settings.deviceName;
+  const maxThreads = store.state.settings.cpuThreads;
   const userAddress = store.state.settings.address;
   const poolHost = store.state.settings.host;
   const poolPort = store.state.settings.port;
@@ -222,7 +222,14 @@ const startMining = async (gpu = false) => {
     const type = vendor.includes("Advanced Micro Devices") ? "opencl" : "cuda";
     console.log(`GPU Type: ${type}`);
 
-    const argv = { threads: [2], cache: [4], jobs: [8] };
+    const argv = {
+      memory: [store.state.settings.gpuMemory],
+      threads: [store.state.settings.gpuThreads],
+      cache: [store.state.settings.gpuCache],
+      memoryTradeoff: [store.state.settings.gpuMemoryTradeoff],
+      jobs: [store.state.settings.gpuJobs],
+    };
+
     const deviceOptions = getDeviceOptions(argv);
     $.nativeMiner = new NativeMiner(type, deviceOptions);
     $.nativeMiner.on("hashrate-changed", (hashrates) => {

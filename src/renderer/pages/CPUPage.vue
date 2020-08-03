@@ -136,7 +136,7 @@ export default {
         port,
       });
       if (address === "" || host === "" || port === "") {
-        this.alert("Fill all the inputs: Address, Pool Host and Pool Port");
+        this.alert("Fill the Address input and choose a Pool");
         return;
       } else {
         try {
@@ -209,6 +209,11 @@ export default {
 
 .space-between {
   justify-content: space-between !important;
+}
+
+.py-1 {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .py-2 {

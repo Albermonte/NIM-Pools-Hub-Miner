@@ -42,7 +42,7 @@ export default {
     });
   },
   mounted() {
-    this.$router.replace(this.currentPage === "cpu" ? "/" : "/gpu");
+    this.$router.replace(`/${this.currentPage}`);
   },
 };
 </script>

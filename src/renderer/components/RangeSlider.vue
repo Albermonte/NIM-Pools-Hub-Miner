@@ -36,14 +36,14 @@ export default {
   computed: {
     threads: {
       get() {
-        return this.$store.state.settings.threads;
+        return this.$store.state.settings.cpuThreads;
       },
       set(value) {
-        this.setThreads(value);
+        this.setCpuThreads(value);
       },
     },
   },
-  methods: mapActions(["setThreads"]),
+  methods: mapActions(["setCpuThreads"]),
 };
 </script>
 

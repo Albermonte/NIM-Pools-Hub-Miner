@@ -127,7 +127,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["setAddress", "setMiningGPU"]),
+    ...mapActions(["setAddress", "setMiningGPU", "setcurrentPage"]),
     startMining() {
       ipcRenderer.send("stopMining", "gpu");
 
@@ -140,7 +140,7 @@ export default {
         port,
       });
       if (address === "" || host === "" || port === "") {
-        this.alert("Fill all the inputs: Address, Pool Host and Pool Port");
+        this.alert("Fill the Address input and choose a Pool");
         return;
       } else {
         try {
@@ -180,9 +180,10 @@ export default {
       this.$router.replace("pools");
     },
     updateAddress(e) {
-      this.$store.dispatch("setAddress", e.target.value);
+      this.setAddress(e.target.value);
     },
     openSettings() {
+      this.setcurrentPage("settings");
       this.$router.replace("/settings");
     },
   },

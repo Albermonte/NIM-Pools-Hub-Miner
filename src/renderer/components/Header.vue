@@ -1,8 +1,9 @@
 <template>
   <div id="titlebar">
     <div class="info-button">
-      <button class="nq-button-s green" @click="openHub">More info at NIM Pools Hub</button>
-      <span class="miner-type">{{ `${currentPage === 'cpu' ? 'CPU' : 'GPU'} MINER` }}</span>
+      <button class="nq-button-s green" @click="openHub">Click here for Advanced Statistics</button>
+      <span v-if="currentPage === 'settings'" class="miner-type">{{ `SETTINGS` }}</span>
+      <span v-else class="miner-type">{{ `${currentPage === 'cpu' ? 'CPU' : 'GPU'} MINER` }}</span>
       <div id="title-bar-btns">
         <div class="icon" @click="minimizeButton">
           <svg style="width:24px;height:24px;" viewBox="0 0 24 24">

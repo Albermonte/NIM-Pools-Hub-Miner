@@ -53,6 +53,7 @@ export default {
       shell.openExternal("https://hub.shortnim.me/");
     },
     openSettings() {
+      this.setcurrentPage("settings");
       this.$router.replace("/settings");
     },
   },
