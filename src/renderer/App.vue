@@ -56,7 +56,7 @@ body,
   display: flex;
   align-items: center;
   flex-direction: row;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .main-window {
