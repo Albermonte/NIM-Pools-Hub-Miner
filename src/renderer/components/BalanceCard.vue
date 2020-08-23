@@ -3,7 +3,7 @@
     <div class="nq-card-header">
       <span class="nq-h2">Pool Balance</span>
     </div>
-    <div v-if="!loading" class="nq-card-body">{{ balance }} NIM</div>
+    <div v-if="!loading" class="nq-card-body">{{ balances !== null ? balances.balance : 0 }} NIM</div>
     <div v-else class="nq-card-body">
       <CircleSpinner />
     </div>
@@ -14,30 +14,30 @@
 import { ipcRenderer } from "electron";
 import CircleSpinner from "@/components/CircleSpinner";
 
+import { mapState } from "vuex";
+
 export default {
   name: "balance-card",
   components: {
-    CircleSpinner
+    CircleSpinner,
   },
-  data() {
-    return {
-      loading: false,
-      balance: 0,
-      confirmedBalance: 0
-    };
+  computed: {
+    ...mapState({
+      balances: (state) => state.hashrate.balances,
+      currentPage: (state) => state.views.currentPage,
+      miningCPU: (state) => state.hashrate.mining.cpu,
+      miningGPU: (state) => state.hashrate.mining.gpu,
+    }),
+    loading() {
+      if (this.currentPage === "cpu") {
+        return this.miningCPU && this.balances === null;
+      } else if (this.currentPage === "gpu") {
+        return this.miningGPU && this.balances === null;
+      } else {
+        return false;
+      }
+    },
   },
-  mounted() {
-    ipcRenderer.on("pool-balance", (event, message) => {
-      this.loading = false;
-      this.balance = message.balance;
-      this.confirmedBalance = message.confirmedBalance;
-    });
-  },
-  methods: {
-    startMining() {
-      this.loading = true;
-    }
-  }
 };
 </script>
 

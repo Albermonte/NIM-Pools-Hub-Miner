@@ -26,7 +26,7 @@
         <button
           class="nq-button orange"
           @click="selectPool"
-          :class="miningCPU ? 'disabled' : ''"
+          :class="miningCPU || miningGPU ? 'disabled' : ''"
         >Change Pool</button>
       </div>
       <div class="col space-between">
@@ -78,6 +78,7 @@ export default {
       port: (state) => state.settings.port,
       displayName: (state) => state.settings.displayName,
       miningCPU: (state) => state.hashrate.mining.cpu,
+      miningGPU: (state) => state.hashrate.mining.gpu,
       cpuArray: (state) => state.hashrate.cpuArray,
       cpuTime: (state) => state.hashrate.cpuTime,
     }),
@@ -114,13 +115,9 @@ export default {
       this.cpuTemp =
         message > 0 ? message : "Run this app as Admin to check CPU ";
     }); */
-
-    // If backend detects this device as laptop and not chargin tell the user to plug it
-    ipcRenderer.on("laptopNotChargin", () => {
-      this.alert(
-        "You seem to be mining on a Laptop but it's not charging, maybe you want to plug it in ;D"
-      );
-    });
+  },
+  destroyed() {
+    ipcRenderer.removeAllListeners("update-downloaded");
   },
   methods: {
     ...mapActions(["setAddress", "setMiningCPU"]),
@@ -146,11 +143,6 @@ export default {
           return;
         }
         this.setMiningCPU(true);
-
-        const balanceComponent = this.$children.find((x) =>
-          x.$vnode.tag.includes("balance-card")
-        );
-        balanceComponent.startMining();
 
         ipcRenderer.send("startMining", {
           address,

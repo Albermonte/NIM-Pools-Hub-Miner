@@ -1,5 +1,10 @@
 const poolListArray = [
   {
+    name: "acemining",
+    displayName: "AceMining",
+    url: "pool.acemining.co:8443",
+  },
+  {
     name: "nimpool",
     displayName: "Nimpool",
     url: "eu.nimpool.io:8444",
@@ -20,23 +25,15 @@ const poolListArray = [
     url: "pool.balkanminingpool.com:8444",
   }, */
   {
-    name: "acemining",
-    displayName: "AceMining",
-    url: "pool.acemining.co:8443",
-  },
-  {
     name: "icemining",
     displayName: "Icemining",
     url: "nimiq.icemining.ca:2053",
   },
-  /* Deleted SkyPool until they start mining tx on their block
-   * If not it hurts the network, so mining disabled for them
-   */
-  /* {
+  {
     name: "skypool",
     displayName: "Skypool",
     url: "sh1.nimiq.skypool.xyz:5000",
-  }, */
+  },
   {
     name: "nimiqwatch",
     displayName: "Nimiq.Watch",

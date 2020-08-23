@@ -189,9 +189,11 @@ const startMining = async (gpu = false) => {
 
   if (!gpu) {
     $.miner = new SushiPoolCpuMiner(userAddress, deviceData, maxThreads);
-    $.miner.on("hashrate-changed", (hashrates) => {
+    $.miner.on("hashrate-changed", async (hashrates) => {
       const totalHashrate = hashrates.reduce((a, b) => a + b, 0);
+      const temp = await cpuTemperature();
       Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashrate)}`);
+      Nimiq.Log.i(TAG, `CPU Temp: ${temp.main}`);
       try {
         /* mainWindow.webContents.send(
           "hashrate-update",
@@ -213,9 +215,7 @@ const startMining = async (gpu = false) => {
     });
 
     $.miner.on("pool-balance", (balances) => {
-      try {
-        mainWindow.webContents.send("pool-balance", balances);
-      } catch (e) {}
+      store.dispatch("setPoolBalance", balances);
     });
   } else {
     const vendor = (await graphics()).controllers[0].vendor;
@@ -270,9 +270,7 @@ const startMining = async (gpu = false) => {
     });
 
     $.minerGPU.on("pool-balance", (balances) => {
-      try {
-        mainWindow.webContents.send("pool-balance", balances);
-      } catch (e) {}
+      store.dispatch("setPoolBalance", balances);
     });
   }
 };
@@ -280,13 +278,11 @@ const startMining = async (gpu = false) => {
 // Messages from render process
 
 ipcMain.on("startMining", async (event, arg) => {
-  const batteryData = await battery();
-  if (batteryData.hasbattery && !batteryData.ischarging)
-    mainWindow.webContents.send("laptopNotChargin");
   startMining(arg.gpu);
 });
 
 ipcMain.on("stopMining", async (event, arg) => {
+  store.dispatch("setPoolBalance", null);
   if (arg === "cpu") {
     if ($.miner) {
       $.miner.disconnect();
@@ -320,9 +316,9 @@ ipcMain.on("getGlobalHashrate", async (event) => {
 
 const log = (message) => {
   console.log(message);
-  try {
+  /* try {
     mainWindow.webContents.send("log", message);
-  } catch (e) {}
+  } catch (e) {} */
 };
 
 process.on("uncaughtException", (err, origin) => {

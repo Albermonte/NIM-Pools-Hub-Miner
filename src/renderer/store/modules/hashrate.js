@@ -5,6 +5,7 @@ const state = {
   gpuArray: [],
   cpuTime: [],
   gpuTime: [],
+  balances: null,
   mining: {
     cpu: false,
     gpu: false,
@@ -56,6 +57,9 @@ const mutations = {
   GPU_MINING(state, value) {
     state.mining.gpu = value;
   },
+  POOL_BALANCE(state, value) {
+    state.balances = value;
+  },
 };
 
 const actions = {
@@ -70,6 +74,9 @@ const actions = {
   },
   setMiningGPU({ commit }, value) {
     commit("GPU_MINING", value);
+  },
+  setPoolBalance({ commit }, value) {
+    commit("POOL_BALANCE", value);
   },
 };
 
