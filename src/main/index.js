@@ -157,7 +157,11 @@ const startMining = async (gpu = false) => {
   const priority = Object.entries(constants.priority)[
     store.state.settings.cpuPriority
   ];
-  setPriority(priority[1]);
+  try {
+    setPriority(priority[1]);
+  } catch (error) {
+    console.error("Set CPU Priority Failed: ", error);
+  }
 
   const deviceName = store.state.settings.deviceName;
   const maxThreads = store.state.settings.cpuThreads;
@@ -219,7 +223,7 @@ const startMining = async (gpu = false) => {
     });
   } else {
     const vendor = (await graphics()).controllers[0].vendor;
-    const type = vendor.includes("Advanced Micro Devices") ? "opencl" : "cuda";
+    const type = vendor.includes("NVIDIA") ? "cuda" : "opencl";
     console.log(`GPU Type: ${type}`);
 
     const argv = {
