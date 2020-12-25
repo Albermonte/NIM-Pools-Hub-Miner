@@ -57,6 +57,7 @@ export default class SushiPoolCpuMiner extends Nimiq.Observable {
   }
 
   _getDeviceId() {
+    console.log(os.networkInterfaces());
     const hostInfo =
       os.hostname() +
       "/" +
