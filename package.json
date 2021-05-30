@@ -38,7 +38,7 @@
     "vuescroll": "^4.17.2",
     "vuex": "^3.6.0",
     "vuex-electron": "^1.0.3",
-    "ws": "^7.4.1"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
