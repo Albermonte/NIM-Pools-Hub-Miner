@@ -48,7 +48,7 @@
     "babel-loader": "^8.2.2",
     "cfonts": "^2.9.3",
     "chalk": "^4.1.1",
-    "copy-webpack-plugin": "^9.0.0",
+    "copy-webpack-plugin": "^6.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^3.6.0",
     "del": "^6.0.0",
