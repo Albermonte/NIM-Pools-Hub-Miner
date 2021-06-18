@@ -199,10 +199,6 @@ const startMining = async (gpu = false) => {
       Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashrate)}`);
       Nimiq.Log.i(TAG, `CPU Temp: ${temp.main}`);
       try {
-        /* mainWindow.webContents.send(
-          "hashrate-update",
-          humanHashes(totalHashRate)
-        ); */
         store.dispatch("setCpuHashrate", humanHashes(totalHashrate));
       } catch (e) {
         console.log(e);
@@ -214,7 +210,7 @@ const startMining = async (gpu = false) => {
       Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
     });
 
-    $.miner.on("pool-disconnected", function() {
+    $.miner.on("pool-disconnected", function () {
       Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
     });
 
@@ -223,6 +219,9 @@ const startMining = async (gpu = false) => {
     });
   } else {
     const vendor = (await graphics()).controllers[0].vendor;
+    if (!vendor.includes("Advanced Micro Devices") && !vendor.includes("NVIDIA")) {
+      mainWindow.webContents.send("no-gpu-alert");
+    }
     const type = vendor.includes("NVIDIA") ? "cuda" : "opencl";
     console.log(`GPU Type: ${type}`);
 
@@ -251,7 +250,7 @@ const startMining = async (gpu = false) => {
           humanHashes(totalHashrate)
         ); */
         store.dispatch("setGpuHashrate", humanHashes(totalHashrate));
-      } catch (e) {}
+      } catch (e) { }
     });
     const deviceId = DumbPoolMiner.generateDeviceId();
     Nimiq.Log.i(TAG, `- device id        = ${deviceId}`);
@@ -269,7 +268,7 @@ const startMining = async (gpu = false) => {
       Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
     });
 
-    $.minerGPU.on("pool-disconnected", function() {
+    $.minerGPU.on("pool-disconnected", function () {
       Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
     });
 
