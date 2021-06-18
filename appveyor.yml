@@ -23,7 +23,7 @@ install:
   - cmd: cuda.exe -s
   - cmd: set PATH=%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v11.0\bin;%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v11.0\libnvvp;%PATH%
   - cmd: set "CUDA_PATH=%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v11.0"
-  - sh: nvm install 12
+  - sh: nvm install 14
   - sh: sudo apt-get update
   - sh: sudo apt-get -y install freeglut3 freeglut3-dev libxi-dev libxmu-dev
   - sh: sudo apt-get install gcc-6 g++-6 linux-headers-$(uname -r) nvidia-384 -y
