@@ -48,27 +48,6 @@ const isNimpoolOnline = async (retry) => {
   }
 };
 
-const isSiriuspoolOnline = async (retry) => {
-  try {
-    const stats = (
-      await axios.get("https://siriuspool.net/stats_refr.php", {
-        timeout: 20000,
-      })
-    ).data;
-    const online = stats.pool_hashrate > 0;
-    return {
-      online,
-      hashrate: parseHashrate(stats.pool_hashrate),
-      hashrateComplete: Number(stats.pool_hashrate.toFixed(0)),
-      pool_fee: "1.0%",
-      minimum_payout: 10,
-    };
-  } catch {
-    if (retry) return isSiriuspoolOnline(false);
-    return false;
-  }
-};
-
 const isSkypoolOnline = async (retry) => {
   try {
     const stats = (
@@ -115,30 +94,6 @@ const isBlankpoolOnline = async (retry) => {
   }
 };
 
-const isBalkanpoolOnline = async (retry) => {
-  try {
-    const { clientCounts, averageHashrate } = (
-      await axios.get("https://pool.balkanminingpool.com/api/pool/stats", {
-        timeout: 20000,
-      })
-    ).data;
-    const pool_fee = (
-      await axios.get("https://pool.balkanminingpool.com/api/pool/config", {
-        timeout: 20000,
-      })
-    ).data.fees;
-    return {
-      online: clientCounts.total > 0 || averageHashrate > 0,
-      hashrate: parseHashrate(averageHashrate),
-      hashrateComplete: Number(averageHashrate.toFixed(0)),
-      pool_fee,
-      minimum_payout: 10,
-    };
-  } catch {
-    if (retry) return isBalkanpoolOnline(false);
-    return false;
-  }
-};
 
 const isNimiqwatchOnline = async (retry) => {
   try {
@@ -194,31 +149,6 @@ const isAceminingOnline = async (retry) => {
     };
   } catch {
     if (retry) return isAceminingOnline(false);
-    return false;
-  }
-};
-
-const isHashexpressOnline = async (retry) => {
-  try {
-    const { device_count, hashrate } = (
-      await axios.get("https://nim.hash.express/api/stats.json", {
-        timeout: 20000,
-      })
-    ).data;
-    const { fee } = (
-      await axios.get("https://nim.hash.express/api/pool.json", {
-        timeout: 20000,
-      })
-    ).data;
-    return {
-      online: device_count > 0 || hashrate > 0,
-      hashrate: parseHashrate(hashrate),
-      hashrateComplete: Number(hashrate.toFixed(0)),
-      pool_fee: (fee < 1 ? parseFloat(fee).toFixed(2) : fee) + "%",
-      minimum_payout: 10,
-    };
-  } catch {
-    if (retry) return isHashexpressOnline(false);
     return false;
   }
 };

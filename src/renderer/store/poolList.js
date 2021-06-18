@@ -15,16 +15,6 @@ const poolListArray = [
     url: "mine.blank.drawpad.org:8444",
   },
   {
-    name: "siriuspool",
-    displayName: "Siriuspool",
-    url: "siriuspool.net:8443",
-  },
-  /*  {
-    name: "balkanpool",
-    displayName: "Balkan Pool",
-    url: "pool.balkanminingpool.com:8444",
-  }, */
-  {
     name: "icemining",
     displayName: "Icemining",
     url: "nimiq.icemining.ca:2053",
@@ -38,11 +28,6 @@ const poolListArray = [
     name: "nimiqwatch",
     displayName: "Nimiq.Watch",
     url: "pool.nimiq.watch:8443",
-  },
-  {
-    name: "hashexpress",
-    displayName: "HashExpress",
-    url: "nim.hash.express:8444",
   },
 ];
 
