@@ -123,22 +123,19 @@ const isNimiqwatchOnline = async (retry) => {
 const isAceminingOnline = async (retry) => {
   try {
     const { hashrate } = (
-      await axios.get("https://api.acemining.co/api/hashrate", {
-        timeout: 20000,
+      await axios.get("https://api.acemining.co/api/v1/hashrate", {
+        timeout: 20000
       })
     ).data;
 
     const { total } = (
-      await axios.get("https://api.acemining.co/api/miners", {
-        timeout: 20000,
+      await axios.get("https://api.acemining.co/api/v1/miners", {
+        timeout: 20000
       })
     ).data;
 
-    const { poolfee, minimal } = (
-      await axios.get("https://api.acemining.co/api/poolinfo", {
-        timeout: 20000,
-      })
-    ).data;
+    const poolfee = "0.5%";
+    const minimal = "1 NIM";
 
     return {
       online: total > 0 || hashrate > 0,
