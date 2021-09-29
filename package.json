@@ -24,7 +24,7 @@
     "@nimiq/core": "^1.5.8",
     "@nimiq/style": "^0.8.3",
     "@nimiq/utils": "^0.7.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bindings": "https://github.com/Albermonte/node-bindings",
     "chart.js": "^2.9.4",
     "electron-log": "^4.3.5",
