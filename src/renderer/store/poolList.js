@@ -4,11 +4,11 @@ const poolListArray = [
     displayName: "AceMining",
     url: "pool.acemining.co:8443",
   },
-  {
-    name: "nimpool",
-    displayName: "Nimpool",
-    url: "eu.nimpool.io:8444",
-  },
+  /* {
+     name: "nimpool",
+     displayName: "Nimpool",
+     url: "eu.nimpool.io:8444",
+   }, */
   {
     name: "blankpool",
     displayName: "BlankPool",

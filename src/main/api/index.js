@@ -55,6 +55,7 @@ const isSkypoolOnline = async (retry) => {
         timeout: 20000,
       })
     ).data.data;
+    console.log(stats);
     const online = stats.hashrate > 0;
     return {
       online,
@@ -151,12 +152,19 @@ const isAceminingOnline = async (retry) => {
 };
 
 export const getGlobalHashrate = async () => {
-  const { estimated_global_hashrate } = (
-    await axios.get("https://nimiq.mopsus.com/api/quick-stats", {
-      timeout: 15000,
-    })
-  ).data;
-  return Number(estimated_global_hashrate.toFixed(0));
+  try {
+
+    const { estimated_global_hashrate } = (
+      await axios.get("https://nimiq.mopsus.com/api/quick-stats", {
+        timeout: 15000,
+      })
+    ).data;
+    return Number(estimated_global_hashrate.toFixed(0));
+  } catch (e) {
+    console.log('Cannot get global hashrate');
+    console.log(e.toString());
+    return 0;
+  }
 };
 
 const parseHashrate = (number) => {
