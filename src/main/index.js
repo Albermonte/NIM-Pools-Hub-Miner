@@ -78,16 +78,16 @@ function createWindow() {
       ps.addCommand(command);
       ps.invoke()
         .then((output) => {
-          console.log("Set UV_THREADPOOL_SIZE to 128")
+          log.info("Set UV_THREADPOOL_SIZE to 128")
           ps.dispose();
         })
         .catch((err) => {
-          console.log(err);
+          log.error(err);
           ps.dispose();
         });
     }
   } else {
-    log(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`);
+    log.info(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`);
   }
 
   log.info("Nimiq initialization");
