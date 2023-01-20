@@ -63,9 +63,32 @@ function createWindow() {
   });
   if (process.env.NODE_ENV !== "development") mainWindow.removeMenu();
 
-  process.env.UV_THREADPOOL_SIZE = cpus().length
-
   log.info("Detecting UV_THREADPOOL_SIZE: " + process.env.UV_THREADPOOL_SIZE);
+
+  if (!process.env.UV_THREADPOOL_SIZE) {
+    process.env.UV_THREADPOOL_SIZE = 128;
+    if (process.platform === "win32") {
+      const Shell = require("node-powershell");
+      let ps = new Shell({
+        executionPolicy: "Bypass",
+        noProfile: true,
+      });
+      const command =
+        "[System.Environment]::SetEnvironmentVariable('UV_THREADPOOL_SIZE', 128, 'User')";
+      ps.addCommand(command);
+      ps.invoke()
+        .then((output) => {
+          console.log("Set UV_THREADPOOL_SIZE to 128")
+          ps.dispose();
+        })
+        .catch((err) => {
+          console.log(err);
+          ps.dispose();
+        });
+    }
+  } else {
+    log(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`);
+  }
 
   log.info("Nimiq initialization");
   Nimiq.GenesisConfig.main();
