@@ -1,9 +1,11 @@
-import { constants, setPriority } from "os";
+import { constants, setPriority, cpus } from "os";
 
 import * as Nimiq from "@nimiq/core";
 import { battery, cpuTemperature, graphics } from "systeminformation";
-
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import log from "electron-log"
+
+import { Analytics } from "./analytics";
 
 import SushiPoolCpuMiner from "./CpuMiner/SushiPoolCpuMiner.js";
 import { humanHashes } from "./CpuMiner/Utils";
@@ -16,8 +18,13 @@ import checkPoolOnline, { getGlobalHashrate } from "./api";
 
 import store from "../renderer/store";
 
+import * as Sentry from "@sentry/electron";
+
+Sentry.init({ dsn: "https://1e437d0b759040b09de59cbd274f67d7@o286629.ingest.sentry.io/4504531872251904" });
+
 // Disable security warnings
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 /**
  * Set `__static` path to static files in production
@@ -36,6 +43,7 @@ const winURL =
     : `file://${__dirname}/index.html`;
 
 function createWindow() {
+  log.info("\n\n\n#################### Creating window ####################\n\n\n");
   /**
    * Initial window options
    */
@@ -55,39 +63,11 @@ function createWindow() {
   });
   if (process.env.NODE_ENV !== "development") mainWindow.removeMenu();
 
-  log("Detecting UV_THREADPOOL_SIZE: " + process.env.UV_THREADPOOL_SIZE);
+  process.env.UV_THREADPOOL_SIZE = cpus().length
 
-  if (!process.env.UV_THREADPOOL_SIZE) {
-    process.env.UV_THREADPOOL_SIZE = 128;
-    if (process.platform === "win32") {
-      const Shell = require("node-powershell");
-      let ps = new Shell({
-        executionPolicy: "Bypass",
-        noProfile: true,
-      });
-      const command =
-        "[Environment]::SetEnvironmentVariable('UV_THREADPOOL_SIZE', 128, 'User')";
-      ps.addCommand(command);
-      ps.invoke()
-        .then((output) => {
-          dialog.showMessageBox({
-            type: "info",
-            message:
-              "First time setup completed. NIM Pools Hub Miner will now restart.",
-          });
-          app.relaunch();
-          app.quit();
-        })
-        .catch((err) => {
-          console.log(err);
-          ps.dispose();
-        });
-    }
-  } else {
-    log(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`);
-  }
+  log.info("Detecting UV_THREADPOOL_SIZE: " + process.env.UV_THREADPOOL_SIZE);
 
-  log("Nimiq initialization");
+  log.info("Nimiq initialization");
   Nimiq.GenesisConfig.main();
 
   store.dispatch("setAppVersion", app.getVersion());
@@ -151,8 +131,6 @@ app.on("ready", () => {
 const TAG = "Miner";
 const $ = {};
 
-Nimiq.Log.instance.level = "info";
-
 const startMining = async (gpu = false) => {
   const priority = Object.entries(constants.priority)[
     store.state.settings.cpuPriority
@@ -160,7 +138,7 @@ const startMining = async (gpu = false) => {
   try {
     setPriority(priority[1]);
   } catch (error) {
-    console.error("Set CPU Priority Failed: ", error);
+    log.error("Set CPU Priority Failed: ", error);
   }
 
   const deviceName = store.state.settings.deviceName;
@@ -169,15 +147,12 @@ const startMining = async (gpu = false) => {
   const poolHost = store.state.settings.host;
   const poolPort = store.state.settings.port;
 
-  console.log("GPU: " + gpu);
-  Nimiq.Log.i(TAG, `- network          = main`);
-  Nimiq.Log.i(TAG, `- no. of threads   = ${maxThreads}`);
-  Nimiq.Log.i(TAG, `- pool server      = ${poolHost}:${poolPort}`);
-  Nimiq.Log.i(TAG, `- address          = ${userAddress}`);
-  Nimiq.Log.i(TAG, `- device name      = ${deviceName}`);
-  if (Nimiq.Log.instance.level === 3) {
-    Nimiq.Log.w(TAG, `Debug mode has been enabled.`);
-  }
+  log.info(TAG, `- GPU              = ${gpu}`);
+  log.info(TAG, `- network          = main`);
+  log.info(TAG, `- no. of threads   = ${maxThreads}`);
+  log.info(TAG, `- pool server      = ${poolHost}:${poolPort}`);
+  log.info(TAG, `- address          = ${userAddress}`);
+  log.info(TAG, `- device name      = ${deviceName}`);
 
   const hashrate = gpu ? 200 : 50; // 100 kH/s by default
   const desiredSps = 5;
@@ -196,22 +171,22 @@ const startMining = async (gpu = false) => {
     $.miner.on("hashrate-changed", async (hashrates) => {
       const totalHashrate = hashrates.reduce((a, b) => a + b, 0);
       const temp = await cpuTemperature();
-      Nimiq.Log.i(TAG, `Hashrate: ${humanHashes(totalHashrate)}`);
-      Nimiq.Log.i(TAG, `CPU Temp: ${temp.main}`);
+      log.info(TAG, `Hashrate: ${humanHashes(totalHashrate)}`);
+      log.info(TAG, `CPU Temp: ${temp.main}`);
       try {
         store.dispatch("setCpuHashrate", humanHashes(totalHashrate));
       } catch (e) {
-        console.log(e);
+        log.error(e);
       }
     });
     $.miner.connect(poolHost, poolPort);
 
     $.miner.on("share", (nonce) => {
-      Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
+      log.info(TAG, `Found share. Nonce: ${nonce}`);
     });
 
     $.miner.on("pool-disconnected", function () {
-      Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
+      log.warn(TAG, `Lost connection with ${poolHost}.`);
     });
 
     $.miner.on("pool-balance", (balances) => {
@@ -223,7 +198,7 @@ const startMining = async (gpu = false) => {
       mainWindow.webContents.send("no-gpu-alert");
     }
     const type = vendor.includes("NVIDIA") ? "cuda" : "opencl";
-    console.log(`GPU Type: ${type}`);
+    log.info(`GPU Type: ${type}`);
 
     const argv = {
       memory: [store.state.settings.gpuMemory],
@@ -237,13 +212,10 @@ const startMining = async (gpu = false) => {
     $.nativeMiner = new NativeMiner(type, deviceOptions);
     $.nativeMiner.on("hashrate-changed", (hashrates) => {
       const totalHashrate = hashrates.reduce((a, v) => a + (v || 0), 0);
-      Nimiq.Log.i(
-        TAG,
-        `Hashrate: ${humanHashes(totalHashrate)} | ${hashrates
-          .map((hr, idx) => `GPU${idx}: ${humanHashes(hr)}`)
-          .filter((hr) => hr)
-          .join(" | ")}`
-      );
+      log.info(TAG, `Hashrate: ${humanHashes(totalHashrate)} | ${hashrates
+        .map((hr, idx) => `GPU${idx}: ${humanHashes(hr)}`)
+        .filter((hr) => hr)
+        .join(" | ")}`)
       try {
         /* mainWindow.webContents.send(
           "hashrate-update",
@@ -253,7 +225,7 @@ const startMining = async (gpu = false) => {
       } catch (e) { }
     });
     const deviceId = DumbPoolMiner.generateDeviceId();
-    Nimiq.Log.i(TAG, `- device id        = ${deviceId}`);
+    log.info(TAG, `- device id        = ${deviceId}`);
 
     $.minerGPU = new DumbPoolMiner(
       $.nativeMiner,
@@ -265,11 +237,11 @@ const startMining = async (gpu = false) => {
     $.minerGPU.connect(poolHost, poolPort);
 
     $.minerGPU.on("share", (nonce) => {
-      Nimiq.Log.i(TAG, `Found share. Nonce: ${nonce}`);
+      log.info(TAG, `Found share. Nonce: ${nonce}`);
     });
 
     $.minerGPU.on("pool-disconnected", function () {
-      Nimiq.Log.w(TAG, `Lost connection with ${poolHost}.`);
+      log.warn(TAG, `Lost connection with ${poolHost}.`);
     });
 
     $.minerGPU.on("pool-balance", (balances) => {
@@ -317,15 +289,9 @@ ipcMain.on("getGlobalHashrate", async (event) => {
   event.reply("getGlobalHashrateReply", globalHashrate);
 });
 
-const log = (message) => {
-  console.log(message);
-  /* try {
-    mainWindow.webContents.send("log", message);
-  } catch (e) {} */
-};
 
 process.on("uncaughtException", (err, origin) => {
-  console.log("Uncaught Exception:");
-  console.log(err);
-  console.log(`On: ${origin}`);
+  log.error("Uncaught Exception:");
+  log.error(err);
+  log.error(`On: ${origin}`);
 });

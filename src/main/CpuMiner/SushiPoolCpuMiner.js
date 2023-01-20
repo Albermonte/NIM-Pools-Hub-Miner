@@ -73,7 +73,9 @@ export default class SushiPoolCpuMiner extends Nimiq.Observable {
     Nimiq.Log.i(SushiPoolCpuMiner, `Connecting to ${host}:${port}`);
     this._host = host;
     this._closed = false;
-    this._ws = new WebSocket(`wss://${host}:${port}`);
+    this._ws = new WebSocket(`wss://${host}:${port}`, {
+      rejectUnauthorized: false, // Necessary for current Electron version
+    });
 
     this._ws.on("open", () => {
       this._register();

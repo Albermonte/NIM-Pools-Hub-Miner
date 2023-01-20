@@ -57,6 +57,7 @@ body,
   align-items: center;
   flex-direction: row;
   overflow: hidden;
+  scroll-behavior: smooth;
 }
 
 .main-window {

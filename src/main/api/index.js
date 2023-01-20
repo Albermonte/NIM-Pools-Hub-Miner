@@ -1,4 +1,11 @@
 const axios = require("axios");
+const https = require("https");
+const log = require("electron-log");
+const Nimiq = require("@nimiq/core");
+
+const agent = new https.Agent({
+  rejectUnauthorized: false // Necessary for current Electron version
+});
 
 const checkPoolOnline = (poolName) => {
   return eval("is" + poolName + "Online(true)");
@@ -9,6 +16,7 @@ const isIceminingOnline = async (retry) => {
     const { NIM } = (
       await axios.get("https://icemining.ca/api/currencies", {
         timeout: 20000,
+        httpsAgent: agent
       })
     ).data;
     const online = NIM.hashrate > 0;
@@ -19,78 +27,11 @@ const isIceminingOnline = async (retry) => {
       pool_fee: "1.25%",
       minimum_payout: NIM.payout_min,
     };
-  } catch {
+  } catch (e) {
+    console.log(e.toString());
+    log.error(e);
+
     if (retry) return isIceminingOnline(false);
-    return false;
-  }
-};
-
-const isNimpoolOnline = async (retry) => {
-  try {
-    const res = (
-      await axios.get("https://api.nimpool.io/status", { timeout: 20000 })
-    ).data.result;
-    const { result } = (
-      await axios.get("https://api.nimpool.io/pool", { timeout: 20000 })
-    ).data;
-    return {
-      online: res.eu.core,
-      hashrate: parseHashrate((result.work_per_second || 0) * Math.pow(2, 16)),
-      hashrateComplete: Number(
-        ((result.work_per_second || 0) * Math.pow(2, 16)).toFixed(0)
-      ),
-      pool_fee: "1.0%",
-      minimum_payout: 5,
-    };
-  } catch {
-    if (retry) return isNimpoolOnline(false);
-    return false;
-  }
-};
-
-const isSkypoolOnline = async (retry) => {
-  try {
-    const stats = (
-      await axios.get("https://api.nimiq.skypool.xyz/api/v1/pool/poolProfile", {
-        timeout: 20000,
-      })
-    ).data.data;
-    console.log(stats);
-    const online = stats.hashrate > 0;
-    return {
-      online,
-      hashrate: parseHashrate(stats.hashrate),
-      hashrateComplete: Number(stats.hashrate.toFixed(0)),
-      pool_fee: "~1%",
-      minimum_payout: 10,
-    };
-  } catch {
-    if (retry) return isSkypoolOnline(false);
-    return false;
-  }
-};
-
-const isBlankpoolOnline = async (retry) => {
-  try {
-    const { clientCounts, averageHashrate } = (
-      await axios.get("https://mine.blank.drawpad.org/api/pool/stats", {
-        timeout: 20000,
-      })
-    ).data;
-    const pool_fee = (
-      await axios.get("https://mine.blank.drawpad.org/api/pool/config", {
-        timeout: 20000,
-      })
-    ).data.fees;
-    return {
-      online: clientCounts.total > 0 || averageHashrate > 0,
-      hashrate: parseHashrate(averageHashrate),
-      hashrateComplete: Number(averageHashrate.toFixed(0)),
-      pool_fee,
-      minimum_payout: 0,
-    };
-  } catch {
-    if (retry) return isBlankpoolOnline(false);
     return false;
   }
 };
@@ -101,11 +42,13 @@ const isNimiqwatchOnline = async (retry) => {
     const { device_count, hashrate } = (
       await axios.get("https://pool.nimiq.watch/api/stats.json", {
         timeout: 20000,
+        httpsAgent: agent
       })
     ).data;
     const { fee } = (
       await axios.get("https://pool.nimiq.watch/api/pool.json", {
         timeout: 20000,
+        httpsAgent: agent
       })
     ).data;
     return {
@@ -115,7 +58,10 @@ const isNimiqwatchOnline = async (retry) => {
       pool_fee: (fee < 1 ? parseFloat(fee).toFixed(2) : fee) + "%",
       minimum_payout: 10,
     };
-  } catch {
+  } catch (e) {
+    console.log(e.toString());
+    log.error(e);
+
     if (retry) return isNimiqwatchOnline(false);
     return false;
   }
@@ -123,29 +69,29 @@ const isNimiqwatchOnline = async (retry) => {
 
 const isAceminingOnline = async (retry) => {
   try {
-    const { hashrate } = (
-      await axios.get("https://api.acemining.co/api/v1/hashrate", {
-        timeout: 20000
-      })
-    ).data;
+    const statsPromise = axios.get("https://api.acemining.co/api/v1/currencies", {
+      timeout: 20000,
+      httpsAgent: agent
+    })
 
-    const { total } = (
-      await axios.get("https://api.acemining.co/api/v1/miners", {
-        timeout: 20000
-      })
-    ).data;
+    const blocksPromise = axios.get("https://api.acemining.co/api/v1/totalblocks", {
+      timeout: 20000,
+      httpsAgent: agent
+    })
 
-    const poolfee = "0.5%";
-    const minimal = "1 NIM";
+    const [stats, blocks] = (await Promise.all([statsPromise, blocksPromise])).map(res => res.data)
 
     return {
-      online: total > 0 || hashrate > 0,
-      hashrate: parseHashrate(hashrate),
-      hashrateComplete: Number(hashrate.toFixed(0)),
-      pool_fee: poolfee,
-      minimum_payout: Number(minimal.match(/\d+/)[0]),
+      online: stats.workers > 0 || stats.hashrate > 0,
+      hashrate: parseHashrate(stats.hashrate),
+      hashrateComplete: Number(stats.hashrate.toFixed(0)),
+      pool_fee: stats.NIM.reward_model.PPLNS + "%",
+      minimum_payout: stats.payout_min,
     };
-  } catch {
+  } catch (e) {
+    console.log(e.toString());
+    log.error(e);
+
     if (retry) return isAceminingOnline(false);
     return false;
   }
@@ -153,16 +99,40 @@ const isAceminingOnline = async (retry) => {
 
 export const getGlobalHashrate = async () => {
   try {
-
-    const { estimated_global_hashrate } = (
-      await axios.get("https://nimiq.mopsus.com/api/quick-stats", {
+    const { data } = (
+      await axios.get("https://api.nimiq.watch/statistics/difficulty/day", {
         timeout: 15000,
+        httpsAgent: agent
       })
-    ).data;
-    return Number(estimated_global_hashrate.toFixed(0));
+    );
+    const difficulty = data.map(function (block) { return block['d']; });
+    const timestamp = data.map(function (block) { return block['t']; });
+
+    // Fill empty times
+    let i = 0;
+    const gap = 15 * 60; // 15 minutes
+    const now = Date.now() / 1000;
+
+    while (timestamp[i]) {
+      if (
+        (!timestamp[i + 1] && now - timestamp[i] > gap * 1.8)
+        || (timestamp[i + 1] > timestamp[i] + gap * 1.8)
+      ) {
+        // Add missing time
+        timestamp.splice(i + 1, 0, timestamp[i] + gap);
+        difficulty.splice(i + 1, 0, 0);
+      }
+      i++;
+    }
+    const hashrate  = difficulty.map(function(diff) { return Math.round(diff * Math.pow(2, 16) / Nimiq.Policy.BLOCK_TIME); });
+
+    return hashrate[hashrate.length - 1];
   } catch (e) {
     console.log('Cannot get global hashrate');
     console.log(e.toString());
+
+    log.error('Cannot get global hashrate');
+    log.error(e);
     return 0;
   }
 };

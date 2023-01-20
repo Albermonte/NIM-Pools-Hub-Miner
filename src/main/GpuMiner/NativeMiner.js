@@ -1,4 +1,6 @@
 const Nimiq = require("@nimiq/core");
+const log = require("electron-log");
+const {Analytics} = require("../analytics");
 
 export default class NativeMiner extends Nimiq.Observable {
   /**
@@ -7,7 +9,7 @@ export default class NativeMiner extends Nimiq.Observable {
    */
   constructor(type, deviceOptions) {
     super();
-
+    
     const NimiqMiner = require("bindings")(`nimiq_miner_${type}.node`);
     this._nativeMiner = new NimiqMiner.Miner();
 
@@ -17,6 +19,7 @@ export default class NativeMiner extends Nimiq.Observable {
       if (!options.enabled) {
         device.enabled = false;
         Nimiq.Log.i(`GPU #${idx}: ${device.name}. Disabled by user.`);
+        log.info(`GPU #${idx}: ${device.name}. Disabled by user.`);
         return;
       }
       if (options.memory !== undefined) {
@@ -33,12 +36,15 @@ export default class NativeMiner extends Nimiq.Observable {
           device.memoryTradeoff = options.memoryTradeoff;
         }
         Nimiq.Log.i(
-          `GPU #${idx}: ${device.name}, ${device.multiProcessorCount} SM @ ${
-            device.clockRate
-          } MHz. (memory: ${
-            device.memory == 0 ? "auto" : device.memory
-          }, threads: ${device.threads}, cache: ${
-            device.cache
+          `GPU #${idx}: ${device.name}, ${device.multiProcessorCount} SM @ ${device.clockRate
+          } MHz. (memory: ${device.memory == 0 ? "auto" : device.memory
+          }, threads: ${device.threads}, cache: ${device.cache
+          }, mem.tradeoff: ${device.memoryTradeoff})`
+        );
+        log.info(
+          `GPU #${idx}: ${device.name}, ${device.multiProcessorCount} SM @ ${device.clockRate
+          } MHz. (memory: ${device.memory == 0 ? "auto" : device.memory
+          }, threads: ${device.threads}, cache: ${device.cache
           }, mem.tradeoff: ${device.memoryTradeoff})`
         );
       } else {
@@ -46,15 +52,19 @@ export default class NativeMiner extends Nimiq.Observable {
           device.jobs = options.jobs;
         }
         Nimiq.Log.i(
-          `GPU #${idx}: ${device.name}, ${device.maxComputeUnits} CU @ ${
-            device.maxClockFrequency
-          } MHz. (memory: ${
-            device.memory == 0 ? "auto" : device.memory
-          }, threads: ${device.threads}, cache: ${device.cache}, jobs: ${
-            device.jobs
+          `GPU #${idx}: ${device.name}, ${device.maxComputeUnits} CU @ ${device.maxClockFrequency
+          } MHz. (memory: ${device.memory == 0 ? "auto" : device.memory
+          }, threads: ${device.threads}, cache: ${device.cache}, jobs: ${device.jobs
+          })`
+        );
+        log.info(
+          `GPU #${idx}: ${device.name}, ${device.maxComputeUnits} CU @ ${device.maxClockFrequency
+          } MHz. (memory: ${device.memory == 0 ? "auto" : device.memory
+          }, threads: ${device.threads}, cache: ${device.cache}, jobs: ${device.jobs
           })`
         );
       }
+      Analytics.setGPUConfig({ idx, type, device });
     });
 
     const threads = this._devices.reduce(
@@ -88,6 +98,7 @@ export default class NativeMiner extends Nimiq.Observable {
           this._lastHashRates[idx].slice(1).reduce((sum, val) => sum + val, 0) /
           (this._lastHashRates[idx].length - 1);
       }
+      Analytics.updateHashrate({ idx, hashrate: hashRate });
     });
     this._hashes = [];
     if (averageHashRates.length > 0) {
