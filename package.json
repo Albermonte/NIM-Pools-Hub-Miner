@@ -1,6 +1,6 @@
 {
   "name": "nim-pools-hub-miner",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Albermonte <alberto.monterroso@hotmail.com>",
   "description": "Nimiq GUI Miner",
   "homepage": "https://github.com/Albermonte/nim-pools-hub-miner",
