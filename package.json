@@ -9,7 +9,7 @@
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "build": "node .electron-vue/build.js && electron-builder",
-    "release": "node .electron-vue/build.js && electron-builder --publish always",
+    "deploy": "node .electron-vue/build.js && electron-builder --publish always",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -17,7 +17,8 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "node postinstall"
+    "postinstall": "node postinstall",
+    "release": "release-it"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -67,6 +68,7 @@
     "node-lmdb": "https://github.com/tomkha/node-lmdb#win_delay_load_hook",
     "node-loader": "^1.0.2",
     "node-sass": "^5.0.0",
+    "release-it": "^15.6.0",
     "sass-loader": "^10.1.0",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^3.0.6",
