@@ -67,7 +67,7 @@
     "multispinner": "^0.2.1",
     "node-lmdb": "https://github.com/tomkha/node-lmdb#win_delay_load_hook",
     "node-loader": "^1.0.2",
-    "node-sass": "^5.0.0",
+    "node-sass": "^8.0.0",
     "release-it": "^15.6.0",
     "sass-loader": "^10.1.0",
     "style-loader": "^2.0.0",
