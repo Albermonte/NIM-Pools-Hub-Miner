@@ -68,23 +68,27 @@ function createWindow() {
   if (!process.env.UV_THREADPOOL_SIZE) {
     process.env.UV_THREADPOOL_SIZE = 128;
     if (process.platform === "win32") {
-      const Shell = require("node-powershell");
-      let ps = new Shell({
-        executionPolicy: "Bypass",
-        noProfile: true,
-      });
-      const command =
-        "[System.Environment]::SetEnvironmentVariable('UV_THREADPOOL_SIZE', 128, 'User')";
-      ps.addCommand(command);
-      ps.invoke()
-        .then((output) => {
-          log.info("Set UV_THREADPOOL_SIZE to 128")
-          ps.dispose();
-        })
-        .catch((err) => {
-          log.error(err);
-          ps.dispose();
+      try {
+        const Shell = require("node-powershell");
+        let ps = new Shell({
+          executionPolicy: "Bypass",
+          noProfile: true,
         });
+        const command =
+          "[System.Environment]::SetEnvironmentVariable('UV_THREADPOOL_SIZE', 128, 'User')";
+        ps.addCommand(command);
+        ps.invoke()
+          .then((output) => {
+            log.info("Set UV_THREADPOOL_SIZE to 128")
+            ps.dispose();
+          })
+          .catch((err) => {
+            log.error(err);
+            ps.dispose();
+          });
+      } catch (e) {
+        log.error(e);
+      }
     }
   } else {
     log.info(`Detected ${process.env.UV_THREADPOOL_SIZE} threadpool size`);
