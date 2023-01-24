@@ -1,7 +1,17 @@
 # NIM Pools Hub Miner
 
-[![Donate NIM](https://www.nimiq.com/accept-donations/img/donationBtnImg/orange-small.svg)](https://safe.nimiq.com/#_request/NQ65GS91H8CSQFAN1EVSUK3GX7PLL9N1X4KC_)
+[![Donate NIM](https://www.nimiq.com/accept-donations/img/donationBtnImg/orange-small.svg)](https://wallet.nimiq.com/nimiq:NQ65GS91H8CSQFAN1EVSUK3GX7PLL9N1X4KC)
 [![Github All Releases](https://img.shields.io/github/downloads/Albermonte/nim-pools-hub-miner/total.svg)]() [![time tracker](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner.svg)](https://wakatime.com/badge/github/Albermonte/nim-pools-hub-miner) [![Build status](https://ci.appveyor.com/api/projects/status/bxh346f3qoetemq1?svg=true)](https://ci.appveyor.com/project/Albermonte/nim-pools-hub-miner)
+
+Nimiq Miner with focus on user experience and easy of use.
+
+### Features:
+- You can mine using **GPU** and **CPU** with the same miner
+- Available for **NVIDIA** and **AMD** cards
+- **Free**, no dev fee
+- All active pools available
+- Ready to start mining, no need to tweak any config
+- Advance statistics for all pools in [one place](https://hub.shortnim.me/)
 
 > GUI by Albermonte, Miner by SushiPool & Mat (tomkha)
 
@@ -14,24 +24,3 @@
 #### CPU & GPU Miner in action
 
 ![Mining CPU](screenshots/miningCPU.png) ![Mining GPU](screenshots/miningGPU.png) ![Pool List](screenshots/poolList.png)
-
----
-
-#### Build Setup
-
-```bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
-npm run build
-
-
-```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
