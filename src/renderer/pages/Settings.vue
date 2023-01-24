@@ -8,13 +8,7 @@
           </div>
           <div class="nq-card-body">
             <div class="row" style="padding-bottom: 14px">
-              <input
-                placeholder="Nimiq Address"
-                :value="address"
-                @input="updateAddress"
-                class="nq-input-s text-center"
-                style="width: 100%; text-transform:uppercase;"
-              />
+              <input placeholder="Nimiq Address" :value="address" @input="updateAddress" class="nq-input-s text-center" style="width: 100%; text-transform:uppercase;" />
             </div>
             <div class="row">
               <div class="col align-start">Device Name:</div>
@@ -46,29 +40,13 @@
             <div class="row">
               <div class="col align-start">Threads:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  style="width: 100%;"
-                  min="1"
-                  :max="maxThreads"
-                  :value="cpuThreads"
-                  @input="updateCpuThreads"
-                />
+                <input class="nq-input-s text-center" type="number" style="width: 100%;" min="1" :max="maxThreads" :value="cpuThreads" @input="updateCpuThreads" />
               </div>
             </div>
             <div class="row">
               <div class="col align-start">CPU Priority:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  min="0"
-                  max="5"
-                  style="width: 100%;"
-                  :value="cpuPriority"
-                  @input="updateCpuPriority"
-                />
+                <input class="nq-input-s text-center" type="number" min="0" max="5" style="width: 100%;" :value="cpuPriority" @input="updateCpuPriority" />
               </div>
             </div>
             <div class="row">
@@ -77,21 +55,13 @@
             <div class="row">
               <div class="col align-start">CPU Hashrate:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center vanishing"
-                  :value="hashrateCPU === '0 kH/s' && miningCPU ? 'Loading...' : hashrateCPU"
-                  disabled
-                />
+                <input class="nq-input-s text-center vanishing" :value="hashrateCPU === '0 kH/s' && miningCPU ? 'Loading...' : hashrateCPU" disabled />
               </div>
             </div>
           </div>
           <div class="nq-card-footer">
             <button v-if="miningCPU" class="nq-button-pill red" @click="stopCPU">Stop</button>
-            <button
-              class="nq-button-pill"
-              :class="miningCPU ? 'orange' : 'light-blue'"
-              @click="restartGPU(false)"
-            >Test new CPU Miner Settings</button>
+            <button class="nq-button-pill" :class="miningCPU ? 'orange' : 'light-blue'" @click="restartGPU(false)">Test new CPU Miner Settings</button>
           </div>
         </div>
       </div>
@@ -104,13 +74,7 @@
             <div class="row">
               <div class="col align-start">Memory:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  style="width: 100%;"
-                  :value="gpuMemory"
-                  @input="updateGpuMemory"
-                />
+                <input class="nq-input-s text-center" type="number" style="width: 100%;" :value="gpuMemory" @input="updateGpuMemory" />
               </div>
             </div>
             <div class="row">
@@ -119,69 +83,37 @@
             <div class="row">
               <div class="col align-start">Threads:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  style="width: 100%;"
-                  :value="gpuThreads"
-                  @input="updateGpuThreads"
-                />
+                <input class="nq-input-s text-center" type="number" style="width: 100%;" min="1" :value="gpuThreads" @input="updateGpuThreads" />
               </div>
             </div>
             <div class="row">
               <div class="col align-start">Cache:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  style="width: 100%;"
-                  :value="gpuCache"
-                  @input="updateGpuCache"
-                />
+                <input class="nq-input-s text-center" type="number" style="width: 100%;" :value="gpuCache" @input="updateGpuCache" />
               </div>
             </div>
             <div class="row">
               <div class="col align-start">Memory Tradeoff (NVIDIA):</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  style="width: 100%;"
-                  :value="gpuMemoryTradeoff"
-                  @input="updateGpuMemoryTradeoff"
-                />
+                <input class="nq-input-s text-center" type="number" style="width: 100%;" :value="gpuMemoryTradeoff" @input="updateGpuMemoryTradeoff" />
               </div>
             </div>
             <div class="row">
               <div class="col align-start">Jobs (AMD):</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center"
-                  type="number"
-                  style="width: 100%;"
-                  :value="gpuJobs"
-                  @input="updateGpuJos"
-                />
+                <input class="nq-input-s text-center" type="number" style="width: 100%;" :value="gpuJobs" @input="updateGpuJos" />
               </div>
             </div>
             <div class="row">
               <div class="col align-start">GPU Hashrate:</div>
               <div class="col align-end">
-                <input
-                  class="nq-input-s text-center vanishing"
-                  :value="hashrateGPU === '0 kH/s' && miningGPU ? 'Loading...' : hashrateGPU"
-                  disabled
-                />
+                <input class="nq-input-s text-center vanishing" :value="hashrateGPU === '0 kH/s' && miningGPU ? 'Loading...' : hashrateGPU" disabled />
               </div>
             </div>
           </div>
           <div class="nq-card-footer">
             <button v-if="miningGPU" class="nq-button-pill red" @click="stopGPU">Stop</button>
-            <button
-              class="nq-button-pill"
-              :class="miningGPU ? 'orange' : 'light-blue'"
-              @click="restartGPU(true)"
-            >Test new GPU Miner Settings</button>
+            <button class="nq-button-pill" :class="miningGPU ? 'orange' : 'light-blue'" @click="restartGPU(true)">Test new GPU Miner Settings</button>
           </div>
         </div>
       </div>
@@ -260,7 +192,7 @@ export default {
       this.setDeviceName(e.target.value);
     },
     updateCpuThreads(e) {
-      this.setCpuThreads(Number(e.target.value));
+      this.setCpuThreads(Number(e.target.value) || 1);
     },
     updateCpuPriority(e) {
       this.setCpuPriority(Number(e.target.value));
@@ -269,7 +201,7 @@ export default {
       this.setGpuMemory(Number(e.target.value));
     },
     updateGpuThreads(e) {
-      this.setGpuThreads(Number(e.target.value));
+      this.setGpuThreads(Number(e.target.value) || 1);
     },
     updateGpuCache(e) {
       this.setGpuCache(Number(e.target.value));
