@@ -47,6 +47,7 @@
     "@babel/core": "^7.16.0",
     "@babel/plugin-transform-runtime": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
+    "@sentry/webpack-plugin": "^1.20.0",
     "@vue/cli-plugin-typescript": "^4.5.15",
     "babel-loader": "^8.2.3",
     "cfonts": "^2.10.0",

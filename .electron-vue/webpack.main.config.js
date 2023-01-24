@@ -8,6 +8,8 @@ const webpack = require("webpack");
 
 const TerserPlugin = require("terser-webpack-plugin");
 
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
+
 let mainConfig = {
   entry: {
     main: path.join(__dirname, "../src/main/index.js"),
@@ -40,7 +42,23 @@ let mainConfig = {
     libraryTarget: "commonjs2",
     path: path.join(__dirname, "../dist/electron"),
   },
-  plugins: [new webpack.NoEmitOnErrorsPlugin()],
+  devtool: "source-map", // Source map generation must be turned on for Sentry to work
+  plugins: [
+    new webpack.NoEmitOnErrorsPlugin(),
+    new SentryWebpackPlugin({
+      org: "albermonte",
+      project: "nim-pools-hub-miner",
+
+      // Specify the directory containing build artifacts
+      include: "./dist",
+
+      // Auth tokens can be obtained from https://sentry.io/settings/account/api/auth-tokens/
+      // and needs the `project:releases` and `org:read` scopes
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+
+      // Optionally uncomment the line below to override automatic release name detection
+      // release: process.env.RELEASE,
+    }),],
   resolve: {
     extensions: [".js", ".json", ".node"],
   },
