@@ -8,6 +8,7 @@ Nimiq Miner with focus on user experience and easy of use.
 ### Features:
 - You can mine using **GPU** and **CPU** with the same miner
 - Available for **NVIDIA** and **AMD** cards
+- Works on any OS. Windows, Linux and macOS
 - **Free**, no dev fee
 - All active pools available
 - Ready to start mining, no need to tweak any config
