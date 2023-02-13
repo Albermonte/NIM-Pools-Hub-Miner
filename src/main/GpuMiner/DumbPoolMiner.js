@@ -86,7 +86,7 @@ export default class DumbPoolMiner extends Nimiq.Observable {
 
   disconnect() {
     this._closed = true;
-    this._ws.close();
+    if (this._ws) this._ws.close();
   }
 
   _register() {

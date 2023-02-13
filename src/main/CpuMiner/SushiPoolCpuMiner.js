@@ -104,7 +104,7 @@ export default class SushiPoolCpuMiner extends Nimiq.Observable {
 
   disconnect() {
     this._closed = true;
-    this._ws.close();
+    if (this._ws) this._ws.close();
   }
 
   _register() {
@@ -232,7 +232,7 @@ export default class SushiPoolCpuMiner extends Nimiq.Observable {
       const readyState = this._ws.readyState;
       Nimiq.Log.e(SushiPoolCpuMiner, `WS error - ${e.message}`);
       if (readyState === WebSocket.CLOSED) {
-        this._ws.close();
+        if (this._ws) this._ws.close();
       }
     }
   }
