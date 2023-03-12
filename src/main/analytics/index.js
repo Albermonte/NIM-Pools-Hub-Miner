@@ -46,7 +46,7 @@ export class Analytics {
             date: Date.now()
         }
         console.log("Sending analytics data: ", data);
-        axios.post('https://nph-miner-api.deta.dev/', data, {
+        axios.post('https://nph-miner-api.shortnim.me/', data, {
             httpsAgent: agent
         }).then(res => {
             console.log(res.data)
