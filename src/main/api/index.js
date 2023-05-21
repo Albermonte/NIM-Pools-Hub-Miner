@@ -67,6 +67,36 @@ const isNimiqwatchOnline = async (retry) => {
   }
 };
 
+const isE4poolOnline = async (retry) => {
+  try {
+    const { device_count, hashrate } = (
+      await axios.get("https://nimiq.e4pool.com/api/stats.json", {
+        timeout: 20000,
+        httpsAgent: agent
+      })
+    ).data;
+    const { fee } = (
+      await axios.get("https://nimiq.e4pool.com/api/pool.json", {
+        timeout: 20000,
+        httpsAgent: agent
+      })
+    ).data;
+    return {
+      online: device_count > 0 || hashrate > 0,
+      hashrate: parseHashrate(hashrate),
+      hashrateComplete: Number(hashrate.toFixed(0)),
+      pool_fee: (fee < 1 ? parseFloat(fee).toFixed(2) : fee) + "%",
+      minimum_payout: 50,
+    };
+  } catch (e) {
+    console.log(e.toString());
+    log.error(e);
+
+    if (retry) return isNimiqwatchOnline(false);
+    return false;
+  }
+};
+
 const isAceminingOnline = async (retry) => {
   try {
     const statsPromise = axios.get("https://api.acemining.co/api/v1/currencies", {
